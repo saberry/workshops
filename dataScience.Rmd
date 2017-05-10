@@ -1,0 +1,154 @@
+---
+title: "Data Science"
+output:
+  revealjs::revealjs_presentation:
+    theme: moon
+    highlight: pygments
+    transition: fade
+    center: true
+    css: credits.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+
+library(ggplot2); library(ggthemes)
+```
+
+# What Is Data Science?
+
+## Three Things
+
+Content knowledge (Science)
+
+Statistics (Math -- Weird math, but still math)
+
+Computer Skills (Technology/Computer Engineering)
+
+## Data Science Venn
+
+![](http://www.niemanlab.org/images/drew-conway-data-science-venn-diagram.jpg)
+
+## Statistics
+
+Statistics is a very complex field.
+
+- That does not mean it has to be complicated!
+
+We have two goals in statistics:
+
+> Explain
+
+> Predict
+
+
+## Explain
+
+```{r}
+ggplot(diamonds, aes(carat, price, color = cut)) +
+  geom_point(alpha = .5) +
+  facet_grid(~ cut) +
+  scale_color_few() +
+  theme_few()
+```
+
+
+## Predict
+
+```{r}
+ggplot(mpg[mpg$cyl != 5, ], aes(cty, displ, color = as.factor(cyl))) +
+  geom_point(alpha = .25) +
+  geom_smooth(se = FALSE, size = 2) +
+  theme_few()
+```
+
+
+## Computer Science Skills
+
+This is probably the hardest to define.
+
+Computer Science is basically knowing how to really use a computer.
+
+Start simple -- try not using a mouse for a day.
+
+
+## {data-background-image="https://media.giphy.com/media/5Zesu5VPNGJlm/giphy.gif"}
+
+
+## Content Knowledge
+
+This can be anything that interests you!
+
+You just need to know the scientific process!
+
+## The Key
+
+![](http://www.cdn.sciencebuddies.org/Files/5084/7/2013-updated_scientific-method-steps_v6_noheader.png)
+
+# What Does A Data Scientist Do?
+
+## Solve Problems
+
+Find and arrange data -- essentially a huge puzzle.
+
+- Especially from the web.
+
+## Find Relationships
+
+```{r, fig.height=5.5, fig.width=9, fig.align="center"}
+library(DT); library(broom); library(dplyr)
+
+carCor = cor(mtcars)
+
+carCor = as.data.frame(carCor) %>% 
+  mutate(item = row.names(carCor)) %>% 
+  tidyr::gather(key = key, value = corrVal, -item)
+
+ggplot(carCor, aes(item, key, fill = corrVal)) +
+  geom_raster(interpolate = TRUE) +
+  scale_y_discrete(limits = rev(levels(as.factor(carCor$key)))) +
+  scale_fill_gradient2(low = "#3d52a1", mid = "#ffffff", high = "#ae1c3e") +
+  theme_few()
+
+```
+
+
+## Have Fun! {data-background-image="https://media.giphy.com/media/S7uFKlh3YpRjW/giphy.gif"}
+
+# How To Become A Data Scientist!
+
+## Learn How To Write Code
+
+Start small and with purpose!
+
+> Batch scripts
+
+> Regular Expressions
+
+> Cascading Style Sheets
+
+> Javascript
+
+
+## Getting Domain Knowledge
+
+The beauty of data science lies in its flexibility.
+
+A strong research background, coupled with CS skills, will give you everything you need.
+
+## Learn As Much About Statistics As Possible
+
+Always start at regression.
+
+- It is the foundation for most statistics.
+
+
+## What Can Data Scientists Do? 
+
+Anything!
+
+Work in industry, academia, private consulting, healthcare, military, and just about any other job type.
+
+## {data-background-image="https://media1.giphy.com/media/SsTcO55LJDBsI/200.gif"}
+
+## Questions  {data-background-image="https://media2.giphy.com/media/l3vRfhFD8hJCiP0uQ/200.gif"}

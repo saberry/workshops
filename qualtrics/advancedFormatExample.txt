@@ -1,0 +1,17 @@
+[[AdvancedFormat]]
+
+[[Question:MC]]
+[[ID:loatheEnjoy]]
+To what extent do you loathe or enjoy using Qualtrics for creating web-based surveys?
+[[Choices]]
+I very much loathe Qualtrics
+I simply loathe Qualtrics
+I am generally neutral about Qualtrics
+I simply enjoy Qualtrics
+I very much enjoy Qualtrics
+
+[[PageBreak]]
+
+[[Question:TE]]
+[[ID:oneWord]]
+Summarize Qualtrics in just one word.

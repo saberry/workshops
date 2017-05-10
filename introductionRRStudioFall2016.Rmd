@@ -1,0 +1,695 @@
+---
+title: "Introduction to R/RStudio"
+author: "Seth Berry"
+output:
+  revealjs::revealjs_presentation:
+    theme: night
+    highlight: zenburn
+    center: true
+    transition: fade
+    css: clean.css
+    slide_level: 2
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, eval = TRUE)
+library(dplyr)
+```
+
+
+## R
+
+R is more than just a "stats package".
+
+- It is a statistical programming language!
+
+R is an object-oriented programming language.
+
+A common question is, "Can R do *this*?".
+
+- The answer is always, "Yes, but can *you* do it?".
+
+    - Just to give you an idea, <span class="pack">tuneR</span> can be used to make electronic music
+
+## Is R Really Different?
+
+* Cost
+
+    * You cannot beat free
+
+* Power
+
+    * Object-oriented programming language with near-infinite flexability
+
+* Open
+
+    * Anyone can contribute to it and/or look at function code
+
+* Maintainers/Package Creators
+
+    * The people who develop methods create packages for those methods
+    
+    
+## Common Hang-ups
+
+"SAS/SPSS/Stata can do chi-square, is there really a difference?"
+
+"I am not a programmer."
+
+"R is really hard/R has a huge learning curve."
+    
+"I don't have time to learn."
+
+```{r, eval = TRUE, echo = FALSE}
+fortunes::fortune(which = 52)
+```
+
+- use the <span class="pack">fortunes</span> package for inspiration!    
+
+
+## Relevant
+
+```{r, echo = FALSE, eval = TRUE}
+fortunes::fortune(which = 108)
+```
+    
+
+
+## Is It The Only One?
+
+Of course not!
+
+Despite being able to do absolutely anything, somethings are easier to do outside of R.
+
+- Just remember that you need to try to make your work reproducible.
+
+    - Just don't do anything by hand!
+
+You can use any number of packages for your research, but R is very close to a "one-stop-shop".
+
+
+
+## CRAN
+
+The Comprehensive R Archive Network is the "official" package repository for R.
+
+> - There are currently <span class="emph">9044</span> packages on CRAN.
+
+> - For perspective, R has 200X more functions than SAS.
+  
+  
+## Finding Information
+
+CRAN Task Views allow you to see a variety of functions associated with topics.
+
+| Task View Examples | Example Packages |
+|-----------+------------------|
+| Econometrics | <span class="pack">wbstats</span> & <span class="pack">plm</span> |
+| Finance | <span class="pack">quantmod</span> & <span class="pack">urca</span> |
+| Machine Learning | <span class="pack">rpart</span> & <span class="pack">caret</span> |
+| Natural Language Processing | <span class="pack">tm</span> & <span class="pack">koRpus</span> |
+| Psychometrics | <span class="pack">lavaan</span> & <span class="pack">mirt</span> |
+| Spatial | <span class="pack">sp</span> & <span class="pack">rgdal</span> |
+| Time Series | <span class="pack">zoo</span> & <span class="pack">forecast</span> |
+
+  
+## Installing packages
+
+From CRAN
+
+```{r install, eval = FALSE, echo = TRUE}
+install.packages(c("devtools", "dplyr"))
+```
+
+From GitHub:
+
+```{r githubInstall, eval = FALSE, echo = TRUE}
+devtools::install_github("saberry/qualtricsR")
+```
+
+- The <span class="pack">devtools</span> package also has the ability to install packages from other repositories (e.g., bitbucket, svn).
+
+## The Basics
+
+Everything in R is an object.
+
+You must create an object and you can then call on the object.
+
+- Always be sure to name objects something other than function names!
+
+```{r , eval = TRUE, echo = TRUE}
+### <b>
+numList = 1:5
+###</b>
+numList
+```
+
+- <span class="func">\<-</span> is the classic assignment operator.
+
+```{r, eval = TRUE, echo = TRUE}
+numList * 5
+```
+
+
+## Object Types
+
+R has many different kinds of objects:
+
+Item
+
+- Numeric
+
+- Character
+
+- Factor/ordered
+
+Data
+
+- Data frame
+
+- Matrix
+
+- List
+
+
+## The Index
+
+Because R creates objects, each object can be manipulated through an index.
+
+Like many other languages, an object's index is generally accessed using <span class="func">\[\]</span>:
+
+```{r index, eval = TRUE, echo = TRUE}
+### <b>
+numList[1:3]
+###</b>
+```
+
+```{r indexMult, eval = TRUE, echo = TRUE}
+numList[1:3] * 5
+```
+
+For *named* objects, we can use the <span class="func">$</span>:
+
+```{r monIndex, eval = TRUE, echo = TRUE}
+head(mtcars$mpg)
+```
+
+## A Big Index Hint
+
+Just like matrix algebra and dimensional lumber -- obj[*rows*, *columns*]
+
+```{r, eval = TRUE, echo = TRUE}
+mtcars[1, ]
+```
+
+```{r, eval = TRUE, echo = TRUE}
+head(mtcars[, 1])
+```
+
+```{r, eval = TRUE, echo = TRUE}
+mtcars[1, 1]
+```
+
+
+
+## Operators and Math Functions
+
+Like any other language (or program, for that matter), R has the ability to use operators:
+
+```{r ops, eval = TRUE, echo = TRUE}
+mtcars$mpg[mtcars$cyl == 6 | mtcars$cyl == 8 & mtcars$hp >= 146]
+```
+
+And math functions:
+
+```{r, eval = TRUE, echo = TRUE}
+sqrt((2 + 2)^2 * (7 / (2 - 1))) * pi
+```
+
+
+## Basic Functions
+
+Even with all of the packages that R has, base R is still extremely powerful by itself.
+
+```{r strEx, eval = TRUE, echo = TRUE}
+str(numList)
+```
+
+```{r summaryEx, eval = TRUE, echo = TRUE}
+summary(numList)
+```
+
+```{r meanEx, eval = TRUE, echo = TRUE}
+mean(numList)
+```
+
+
+## Basic Analyses
+
+```{r, eval = TRUE, echo = TRUE}
+cor(mtcars$mpg, mtcars$wt)
+```
+
+
+```{r, eval = TRUE, echo = TRUE}
+lm(mpg ~ wt, data = mtcars)
+```
+
+
+
+## Basic Plotting
+
+```{r, echo = TRUE}
+plot(mtcars$wt, mtcars$mpg, pch = 19)
+```
+
+
+## Combining Functions
+
+R allows you to combine functions:
+
+```{r, eval = TRUE, fig.height=4, echo = TRUE}
+plot(mtcars$wt, mtcars$mpg, pch = 19)
+lines(lowess(mtcars$wt, mtcars$mpg), col = "#FF6600", lwd = 2)
+abline(lm(mpg ~ wt, data = mtcars), col = "#0099ff", lwd = 2)
+```
+
+## Modern Approaches For Data Wrangling
+
+We saw a glimpse of what base R has to offer in terms of data manipulation.
+
+As powerful as the indexing approach may be, it can often be messy and slightly confusing to someone who may be interested in using your code (or the future you).
+
+- Because it is object-oriented, it is inherently more powerful than traditional stats programs.
+
+## An Example
+
+```{r baseRexample1, eval=FALSE, echo = TRUE}
+### NICE R DATA ###
+
+# numeric indexes; not conducive to readibility or reproducibility
+newData = mtcars[, 1:4]
+
+# explicitly by name; fine if only a handful; not pretty
+newData = mtcars[, c('mpg','cyl', 'disp', 'hp')]
+
+### MEAN REAL DATA ###
+
+# two step with grep (searching with regular expressions)
+cols = c('ID', paste0('X', 1:10), 'var1', 'var2', 
+         grep("^Merc[0-9]+", colnames(oldData), value = TRUE))
+
+newData = oldData[, cols]
+
+# or via subset
+newData = subset(oldData, select = cols)
+```
+
+
+## More
+What if you also want observations where **Z** is **Yes**, **Q** is **No**, and only the last 50 of those results, ordered by **var1** (descending)?
+
+```{r baseRexample2, eval=FALSE, echo = TRUE}
+# three operations and overwriting or creating new objects if we want clarity
+newData = newData[oldData$Z == 'Yes' & oldData$Q == 'No', ]
+newData = tail(newData, 50)
+newData = newdata[order(newdata$var1, decreasing = TRUE), ]
+```
+
+And this is for fairly straightforward operations.
+
+## dplyr
+
+The <span class="pack">dplyr</span> package was created to make data manipulation easier.
+
+```{r, eval = FALSE, echo = TRUE}
+newData = oldData %>% 
+  filter(Z == 'Yes', Q == 'No') %>% 
+  select(num_range('X', 1:10), contains('var'), starts_with('Merc')) %>% 
+  tail(50) %>% 
+  arrange(desc(var1))
+```
+
+
+## Other Handy Functions
+
+```{r, eval = TRUE, echo = TRUE}
+mtcars %>% 
+  filter(am == 0) %>% # Automatic transmission
+  select(mpg, cyl, hp, wt) %>% 
+  mutate(rawWeight = wt * 1000) %>% 
+  group_by(cyl) %>% 
+  summarize_all(funs(mean)) 
+```
+
+
+## coalesce
+
+```{r, eval = TRUE, echo = TRUE}
+
+x = c(1, 2, NA, NA, 5, 6, NA, 8, NA, NA)
+
+y = c(NA, NA, 3, 4, NA, NA, NA, NA, NA, NA)
+
+z = c(NA, NA, NA, NA, NA, NA, 7, NA, 9, 10 )
+
+coalesce(x, y, z)
+
+```
+
+## A Quick Word on %>%
+
+In the previous snippet, you hopefully noticed the <span class="func">\%\>\%</span>.
+
+It is included in <span class="pack">dplyr</span>, but it originates in <span class="pack">magrittr</span>.
+
+It is pronounced as <span class="emph">pipe</span> and is functionally equivalent to the Unix <span class="func">\|</span>
+
+  - Check out <span class="pack">magrittr</span> for other pipes.
+
+
+## Why?
+
+Old-school R:
+
+```{r, echo = TRUE, eval = FALSE}
+
+ceiling(mean(abs(sample(-100:100, 50))))
+
+```
+
+Piping:
+
+```{r, echo = TRUE, eval = FALSE}
+
+-100:100 %>% 
+  sample(50) %>% 
+  abs %>% 
+  mean %>% 
+  ceiling
+
+```
+
+
+Both are valid, but one is just a bit easier for human eyes and easier to code.
+
+## Just Scratching The Surface
+
+We have only really seen the tip of the iceberg with regard to what R has to offer.
+
+- We did not even talk about all its analytical capabilities -- just know that it does anything!
+
+Do take some time to look through the CRAN Task Views.
+
+The RBloggers website always has new and neat stuff.
+
+Daily and weekly trending repositories on GitHub are also enlightening.
+
+```{r, eval = TRUE, echo = FALSE}
+fortunes::fortune(which = 323)
+```
+
+
+## RStudio
+
+> - RStudio is an integrated development environment (IDE) for R.
+
+> - It was developed by J.J. Allaire and Hadley Wickham is the Chief Scientist.
+
+> - There are others, but all pale in comparison.
+
+## Scripting
+
+Before RStudio, there were other options beside using the console.
+
+- My heart goes out to everyone else who has learned on the console and/or Tinn-R.
+
+In scripting with RStudio, you are getting:
+
+    - Code completion (use tab to autocomplete anything)
+    - Code highlighing
+    - Code diagnostics/warnings
+    - Code snippets (tab for apply and loops)
+    - Easily accessible help files (F1 on any function)
+    - Code tidying (Ctrl + Shift + A)
+    - More shortcuts than you can learn (Alt + Shift + K)
+    - Automatic pairing of closures (or...ruining your typing)
+
+## File Types
+
+In addition to R scripts, RStudio offers an array of file types:
+
+* Text
+    + JS
+    + CSS
+    + Python
+* Markdown
+* Presentation
+* C++
+
+Any language file has the code highlighted and diagnosed.
+
+## Interactive Data Exploration
+
+With an assortment of the <span class="objclass">htmlwidgets</span> packages, we can create a wide variety of output.
+
+- <span class="pack">ggvis</span>, <span class="pack">rbokeh</span>, <span class="pack">plotly</span>: interactive visualizations
+- <span class="pack">dygraphs</span>: interactive time-series visualizations
+- <span class="pack">DT</span>: interactive tables
+- <span class="pack">Leaflet</span>: geo-spatial maps
+
+## An Example
+
+```{r, eval = FALSE, echo = c(-1)}
+load("N:/R/conflictData/data/uppsalaConflictData.RData")
+library(dygraphs); library(tidyr)
+as.data.frame(groupTotals) %>%
+  select(year, perp, tot) %>%
+  group_by(year, perp) %>%
+  summarize(tot = sum(tot)) %>%
+  arrange(year) %>%
+  spread(perp, tot) %>%
+  dygraph() %>%
+  dyLegend(show = "onmouseover") %>%
+  dyHighlight(highlightSeriesBackgroundAlpha = .2,
+              hideOnMouseOut = FALSE) %>%
+  dyCSS("N:/R/conflictData/dygraphLegend.css")
+```
+
+
+## An Example {.flexbox .vcenter}
+
+```{r, echo = FALSE, eval = TRUE, warning=FALSE}
+load("conflictDat.RData")
+library(dygraphs); library(tidyr)
+as.data.frame(groupTotals) %>%
+  select(year, perp, tot) %>%
+  group_by(year, perp) %>%
+  summarize(tot = sum(tot)) %>%
+  arrange(year) %>%
+  spread(perp, tot) %>%
+  dygraph() %>%
+  dyLegend(show = "onmouseover") %>%
+  dyHighlight(highlightSeriesBackgroundAlpha = .2,
+              hideOnMouseOut = FALSE) %>%
+  dyCSS("dygraphLegend.css")
+```
+
+
+## Another Example (Because They Are Fun!)
+
+```{r, warning = FALSE, message = FALSE, echo = TRUE, eval = FALSE}
+library(plotly)
+
+plot_ly(economics, x = date, y = uempmed) %>%
+  add_trace(y = fitted(loess(uempmed ~ as.numeric(date))), x = date) %>%
+  layout(title = "Median duration of unemployment (in weeks)",
+         showlegend = FALSE) %>%
+  dplyr::filter(uempmed == max(uempmed)) %>%
+  layout(annotations = list(x = date, y = uempmed, text = "Peak", showarrow = T))
+```
+
+
+## Another Example (Because They Are Fun!)
+
+```{r, warning = FALSE, message = FALSE, echo = FALSE, eval = TRUE}
+library(plotly)
+
+plot_ly(economics, x = date, y = uempmed) %>%
+  add_trace(y = fitted(loess(uempmed ~ as.numeric(date))), x = date) %>%
+  layout(title = "Median duration of unemployment (in weeks)",
+         showlegend = FALSE) %>%
+  dplyr::filter(uempmed == max(uempmed)) %>%
+  layout(annotations = list(x = date, y = uempmed, text = "Peak", showarrow = T))
+```
+
+
+## Last One...
+
+```{r, warning = FALSE, message = FALSE, echo = TRUE, eval = FALSE}
+library(ggplot2)
+
+p = ggplot(mtcars, aes(x = wt, y = mpg)) +
+  geom_point(aes(text = paste("Transmission:", as.factor(am))), size = 2) +
+  geom_smooth(aes(colour = as.ordered(cyl), fill = as.ordered(cyl)), 
+              show.legend = FALSE) + 
+  facet_grid(. ~ cyl) +
+  scale_color_brewer(palette = "Dark2") +
+  scale_fill_brewer(palette = "Dark2") +
+  #scale_colour_discrete(name = "Cylinders") +
+  lazerhawk::theme_trueMinimal()
+
+ggplotly(p)
+```
+
+
+
+## Last One...
+
+```{r, warning = FALSE, message = FALSE, echo = FALSE, eval = TRUE}
+p = ggplot(mtcars, aes(x = wt, y = mpg)) +
+  geom_point(aes(text = paste("Transmission:", as.factor(am))), size = 2) +
+  geom_smooth(aes(colour = as.ordered(cyl), fill = as.ordered(cyl)), show.legend = FALSE) + 
+  facet_grid(. ~ cyl) +
+  scale_color_brewer(palette = "Dark2") +
+  scale_fill_brewer(palette = "Dark2") +
+  #scale_colour_discrete(name = "Cylinders") +
+  lazerhawk::theme_trueMinimal()
+
+ggplotly(p)
+```
+
+
+
+## Interactive Tables
+
+```{r, echo = 3, eval = TRUE}
+mtcars1 = mtcars
+mtcars1$am = factor(mtcars1$am, levels = 0:1)
+DT::datatable(head(mtcars1), filter = "top")
+```
+
+
+## Document Generation
+
+RStudio has built-in capacity to use <span class="pack">knitr</span> and <span class="pack">rmarkdown</span>.
+
+These packages, in conjunction with bits and pieces of $\LaTeX$, allow you to create reproducible documents.
+
+## Example
+
+```{r, eval = FALSE, echo = TRUE}
+`r lmSum = summary(lm(mpg ~ wt, data = mtcars))
+
+if (lmSum$coefficients[2, 4] < .05) {
+  paste("Weight's coefficient of", 
+        round(lmSum$coefficients[2], 3), 
+        "is significant", sep = " ")
+} else {paste("Weight's coefficient of", 
+        round(lmSum$coefficients[2], 3), 
+        "is not significant", sep = " ")}`
+```
+
+
+```{r, echo = FALSE, eval = TRUE}
+lmSum = summary(lm(mpg ~ wt, data = mtcars))
+
+if (lmSum$coefficients[2, 4] < .05) {
+  paste("Weight's coefficient of", 
+        round(lmSum$coefficients[2], 3), 
+        "is significant", sep = " ")
+} else {paste("Weight's coefficient of", 
+        round(lmSum$coefficients[2], 3), 
+        "is not significant", sep = " ")}
+```
+
+## An Example In Practice
+
+A good man once said:
+
+> You, my dear sir, are but a mere
+> `r paste(sample(c('artless','bawdy','beslubbering','bootless','churlish'), 1), sample(c('base-court','bat-fowling','beef-witted','beetle-headed','boil-brained'), 1), sample(c('apple-john','baggage','barnacle','bladder','boar-pig','bugbear'), 1))` 
+> and I bid you a good day.
+
+## The Code
+
+```{r, eval = TRUE, echo = TRUE}
+paste(sample(c('artless','bawdy','beslubbering','bootless'), 1), 
+      sample(c('base-court','bat-fowling','beef-witted','beetle-headed'), 1),
+      sample(c('apple-john','baggage','barnacle','bladder','boar-pig'), 1))
+```
+
+## Document Generation
+
+Documents can be written out as PDF, HTML, or even Word.
+
+The HTML documents can be pages or presentations.
+
+With the exception of minor changes, it really does not take too much effort to switch between outputs.
+
+There are also a handful of templates for you to use.
+
+- All of the Tufte class documents are amazing.
+
+## Projects And Built-in Version Control
+
+RStudio let's you create a project with version control.
+
+- Cloning from existing repositories
+
+- Creating a new repository and "pushing" it up
+
+- Version control can be through Git or Subversion.
+
+## Package Management
+
+There is nothing wrong with using the previously noted <span class="func">install.packages()</span> function.
+
+RStudio has a menu-driven package installation function.
+
+- It has a handy autocomplete function to it, so you can avoid any misspellings!
+
+You are also given a list of all of your packages and which ones are currently loaded.
+
+## Data Read
+
+One of the most common ways to read data into R is through <span class="func">read.csv()</span>.
+
+  - This will take care of almost everything you ever need to do.
+
+Like all thing, RStudio tries to make things easier.
+
+The most recent version of RStudio comes with functionality for <span class="pack">readr</span> and <span class="pack">haven</span>.
+
+These packages allow for faster (and more sensible defaults) data reading from cvs, Excel, SAS, SPSS, and Stata. 
+
+## Addins
+
+Addins are relatively new to RStudio.
+
+They are essentially functions that you can call interactively.
+
+Especially useful if you find yourself creating the same text lines.
+
+```{r, eval = FALSE, echo = TRUE}
+lazerhawk::insertSlide()
+```
+
+
+# Wrap
+
+## Wrapping It Up
+
+Although our time was brief, I hope you can see the benefits of using R/RStudio for your research.
+
+R only continues to develop, improve, and grow!
+
+By using R, you will also find growth!
+
+  - Maybe not happiness, but definitely growth.
+  
+```{r, eval = TRUE, echo = FALSE}
+fortunes::fortune(which = 83)
+```
+
+

@@ -1,0 +1,10 @@
+---
+title: "latex tests"
+output: html_document
+---
+
+$$1 - (\rho / \rho_{null})$$
+
+$R^{2}$
+
+$X^{2}$

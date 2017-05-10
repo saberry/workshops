@@ -1,0 +1,151 @@
+---
+title: "Qualtrics Tips and Tricks"
+output:
+  revealjs::revealjs_presentation:
+    theme: night
+    highlight: pygments
+    center: TRUE
+    transition: fade
+    css: clean.css
+---
+
+## Sliders
+
+<label for="fader">How cool or warm do you feel towards Qualtrics?</label>
+</br>
+<input type="range" min="0" max="100" minLabel="Cold" maxLabel="Warm" value="50" id="fader" 
+	step=".5" oninput="outputUpdate(value)" list="volsettings">
+<output for="fader" id="volume">50</output>
+
+<script>
+function outputUpdate(vol) {
+	document.querySelector('#volume').value = vol;
+}
+</script>
+
+<p class="fragment fade-up">Never appropriate for Likert and Likert-type response options!</p>
+
+<p class="fragment fade-up">Thermometers are probably the only appropriate use.</p>
+
+<p class="fragment fade-up">Weisberg...TSE...reliability...stuff...things...</p>
+
+## Skins
+
+The default skin is bad news...
+
+<p class="fragment fade-up">High visual complexity</p>
+
+<p class="fragment fade-up">Poor contrast between text and background</p>
+
+<p class="fragment fade-up">Not exactly reactive</p>
+
+<p class="fragment fade-up">Very wide</p> 
+
+<p class="fragment current-visible">Fine for the impending Age War</p>
+
+## This Is Rough {data-background="http://jfe-cdn.qualtrics.com/themes/skins/nd/mendoza1/version-1476991469386-82a2f4/files/bg.png" data-background-repeat="repeat" data-background-size="100px" #qFont}
+
+Reading this is tough.
+
+Consider how we actually process text.
+
+Do we really want extra shapes intersecting our word shapes?
+
+## {data-background-image="https://media.giphy.com/media/JlZJZnCmnExFu/giphy.gif"}
+
+
+## Skins
+
+The "Qualtrics 2014" skin works pretty well.
+
+- Reactive
+
+- Hidden radio buttons
+
+## Skins
+
+Since it is just CSS, you can also brew up just about anything else you want.
+
+- Make good use of element inspection.
+
+## Recoding & Variable Naming
+
+Beware the response option edit recode pain.
+
+Give meaningful names to your variables.
+
+- The max character length has been boosted dramatically.
+
+## Survey Programming
+
+How do you create a survey?
+
+<p>
+<span class="fragment fade-up" data-fragment-index="1">Start in Word \></span>
+<span class="fragment fade-up" data-fragment-index="2">Copy and paste into Qualtrics \></span>
+<span class="fragment fade-up" data-fragment-index="3">Click around!</span>
+</p>
+
+<p class="fragment fade-up">Does that essentially fit the bill?</p>
+
+## Advanced Format -- A Better Way
+
+It is just a fancy text file.
+
+It is amazingly efficient.
+
+```{r, eval = FALSE}
+
+[[AdvancedFormat]]
+
+[[Question:MC]]
+[[ID:exampleQ]]
+You do want to be efficient, right?
+[[Choices]]
+No
+Yes
+```
+
+
+## ## {data-background-image="https://media.giphy.com/media/10FWlssZyjGe3K/giphy.gif"}
+
+Once you get it down, you can expect at least a 200X speed increase.
+
+## QSF
+
+Probably nothing you want to mess around with a lot...
+
+Useful for making a whole lot of the same changes.
+
+## QSF
+
+```
+{"SurveyID":"SV_9Fjq3752Oacchvv","Element":"SQ","PrimaryAttribute":"QID1",
+"SecondaryAttribute":"Click to write the question text",
+"TertiaryAttribute":null,"Payload":{"QuestionText":
+"Click to write the question text","DataExportTag":
+"Q1","QuestionType":"MC","Selector":"SAVR","SubSelector":
+"TX","Configuration":{"QuestionDescriptionOption":"UseText"},
+"QuestionDescription":"Click to write the question text","Choices":
+{"1":{"Display":"Click to write Choice 1"},"2":{"Display":
+"Click to write Choice 2"},"3":{"Display":"Click to write Choice3"}},
+"ChoiceOrder":["1","2","3"],"Validation":{"Settings":
+{"ForceResponse":"OFF","ForceResponseType":"ON","Type":"None"}},
+"Language":[],"QuestionID":"QID1"}},{"SurveyID":"SV_9Fjq3752Oacchvv",
+"Element":"RS","PrimaryAttribute":"RS_2hoZS19NLdBtnFP",
+"SecondaryAttribute":"Default Response Set","TertiaryAttribute"
+:null,"Payload":null},
+```
+
+
+## Autocompletes
+
+<p>
+<span class="fragment fade-up" data-fragment-index="1">Tricky...</span>
+<span class="fragment fade-up" data-fragment-index="2">but possible!</span>
+</p>
+
+
+## {data-background-image="https://media.giphy.com/media/5xtDarmwsuR9sDRObyU/giphy.gif"}
+
+ 

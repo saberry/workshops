@@ -1,0 +1,80 @@
+.emph {
+  color: #ff5503;
+  font-weight: 600;
+}
+
+.pack {
+  color: #1e90ff;  /*dodgerblue*/
+  font-weight: 600;
+}
+
+.func {
+  color: #C93312;  /*darkred*/
+  font-weight: 600;
+}
+
+.objclass {
+  color: #006400;  /*darkgreen*/
+  font-weight: 500;
+}
+
+a {
+  color: #ff5503;
+}
+
+.resize{
+  width: 400px;
+  height: auto;
+}
+
+
+pre {
+  box-sizing: border-box;
+  left: 0; /* This changes where the code chunk box actually starts */
+  /* padding: 10px 0 10px 60px; /* Change the last value here to move the text left or right */
+  position: relative;
+  width: 100%; /* This changes where the code chunk box ends on the right side */
+  font-size: 75%; /*changes output size; and comments*/
+  /*border: 10px solid #ff5500;*/  /*code block and results border*/
+  /*background-color:#ff5500;*/   /* results background*/
+
+}
+
+slides > slide:not(.nobackground):after {
+font-size: 9pt;
+content: attr(data-slide-num) "/" attr(data-total-slides);
+position: absolute;
+bottom: 20px;
+right: 20px;
+line-height: 1;
+}
+
+slides > slide.backdrop {
+z-index: -10;
+display: block !important;
+background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ffffff), color-stop(85%, #ffffff), color-stop(100%, #e6e6e6));
+background: -webkit-linear-gradient(#ffffff, #ffffff 85%, #ffffff);
+background: -moz-linear-gradient(#ffffff, #ffffff 85%, #ffffff);
+background: -o-linear-gradient(#ffffff, #ffffff 85%, #ffffff);
+background: linear-gradient(#ffffff, #ffffff 85%, #ffffff);
+background-color: white;
+}
+
+.reveal section p {
+  text-align: left;
+}
+
+.reveal ol,
+.reveal dl,
+.reveal ul {
+  display: block;
+  text-align: left;
+  margin: 0 0 0 1em;
+}
+
+.reveal section img {
+    background: #002b36;                      /*theme background color: https://github.com/rstudio/revealjs/tree/master/inst/reveal.js-3.2.0/css/theme*/
+    border: 0;
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0.15);
+    /*max-width: 500px;*/
+}

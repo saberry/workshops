@@ -1,0 +1,363 @@
+---
+title: "Reproducible Research For Modern Research"
+output:
+  revealjs::revealjs_presentation:
+    theme: night
+    highlight: zenburn
+    center: true
+    transition: fade
+    css: clean.css
+    slide_level: 2
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = FALSE, warning = FALSE, error = FALSE, message = FALSE)
+```
+
+
+## A Potentially Provacative Statement
+
+Jon Claerbout said:
+
+> An article about computational results is advertising, not scholarship. The actual scholarship is the full software environment, code and data, that produced the result.
+
+
+## What's On Tap
+What is reproducible research and why is it important
+
+Defensive Programming
+
+Literate Programming
+
+Next Level Stuff
+
+Helpful Programs
+
+## So, What Is Reproducible Research?
+
+It is more a way of life than a single thing.
+
+At its most basic it can be simplified as:
+
+> - \(same\, data\, + same\, script\, = same\, result\)
+
+> - What is the fun in basic?
+
+## Expanded Notion Of Reproducible Research
+
+Victoria Stodden has suggested that a more sophisticated notion of reproducible research involves:
+
+> - *Computational reproducibility*
+
+> - *Empirical reproducibility*
+
+> - *Statistical reproducibility*
+
+
+## The Importance Of Reproducibility
+
+> - Bugs happen
+
+> - "Beware of bugs in the above code; \n I have only proved it correct, not tried it." -- DK
+
+> - Data changes
+
+> - Co-authors get strange ideas
+
+> - Reviewers make demands
+
+## Does It Really Matter?
+
+It all depends.
+
+Are you:
+
+> - Working collaboratively?
+
+> - Submitting to journals?
+
+> - Putting code "out there"?
+
+> - Using data that updates/changes?
+
+## 
+
+If you answered "yes" to any of those questions, then it does matter for you.
+
+
+## Writing Code
+
+Writing code is an important part of reproducible research.
+
+Nothing point-and-click is reproducible -- ever!
+
+Code $\neq$ reproducible
+
+Just because you have written the code, does not mean it is reproducible.
+
+The same can be said for code you have gotten from someone else.
+
+## A Common Example
+
+```{r}
+# Generating column means
+res = 1:11
+
+for(i in 1:11) {
+  res[i] = apply(mtcars[i], 2, function(x) {
+    sum(x) / 32
+  })
+}
+
+# Adding a new variable.
+library(dplyr)
+mtcars %>% 
+  mutate(wtRaw = wt * 1000)
+
+```
+
+> - Magic numbers are dangerous!
+
+## A More Reproducible Example
+
+```{r}
+res = 1:ncol(mtcars)
+
+for(i in 1:ncol(mtcars)) {
+  res[i] = apply(mtcars[i], 2, function(x) {
+    sum(x) / nrow(mtcars[i])
+  })
+}
+```
+
+
+##
+
+This leads us to...
+
+## Defensive Programming
+
+## Defensive Code?
+
+Usually thought about in the context of production software.
+
+- Security
+
+- Unforeseen errors
+
+We can apply principles of defensive programming to our own research.
+
+
+## Unforeseen errors
+
+Fortunately, we do not need to account for the same things that software engineers need to.
+
+Just because we do not need to take our worry to the production software level, does not mean we do not need to plan for the eventual breaks that can happen.
+
+We should also be thinking about what we might want to do in the future.
+
+## Reinventing The Wheel
+
+Sometimes, we need to build a better mousetrap.
+
+This is, however, not usually the case.
+
+Look for pre-existing code that already serves your purpose.
+
+## Remember This?
+
+```{r, eval = FALSE}
+for(i in 1:ncol(mtcars)) {
+  res[i] = apply(mtcars[i], 2, function(x) {
+    sum(x) / nrow(mtcars[i])
+  })
+}
+```
+
+
+## Should Have Been This...
+
+```{r}
+colMeans(mtcars)
+```
+
+
+## Literate Programming
+
+## Literate Programming
+
+Formulated by Donald Knuth!
+
+The guy who brought us $\TeX$ and that great quote earlier!
+
+At its most basic, it is the inverse of documentation.
+
+\(Documentation\, =\, Comments\,within\, code\)
+
+\(Literate\, Programming\, =\, Code\, within\, exposition\)
+
+## Documentation: An Example
+
+```{r, eval = FALSE}
+# Creating Raw Weight
+library(dplyr)
+mtcars %>% 
+  mutate(wtRaw = wt * 1000)
+```
+
+
+## Literate Programming: A Brief Example
+
+```{r}
+# In the raw data, the "wt" variable (vehicle weight) is the actual weight 
+# divided by 1000.  All in all, this is nothing too major.  However, having
+# weight represented in thousands causes increased mental processing in 
+# visualizations, in addition to unnecessary words to explain the variable.
+
+# To that end, we will create a new variable within the data -- "wtRaw".  
+# To create "wtRaw", we will simply multiply the original "wt" variable 
+# by 1000.  Given the simplicity and simple syntax, we will be using 
+# the "mutate" statement from the "dplyr" package.
+
+library(dplyr)
+mtcars %>% 
+  mutate(wtRaw = wt * 1000)
+
+```
+
+
+## To What Level?
+
+I know exactly one person who has gone full-on literate programming.
+
+- It is a massive undertaking!
+
+Instead of just thinking through your code, start writing your "code thoughts" down.
+
+> - Start with the idea that comments explain ideas and the "why" behind the code, not just what the code is doing.
+
+## Reproducible Research
+
+## Reproducible Research
+
+We already started down the path of the why and what.
+
+We should probably talk about the how.
+
+## Taking Reproducible Research To The Highest Level
+
+Writing code is just one part of the research process.
+
+Although it is important, that is not where reproducible research stops.
+
+## Documents
+
+Your data and code can "live" within documents.
+
+```{r, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE, error = TRUE}
+library(stargazer)
+linear.1 <- lm(rating ~ complaints + privileges, data=attitude)
+linear.2 <- lm(rating ~ complaints + privileges + learning, data=attitude)
+tidySummary = broom::tidy(linear.2)
+knitr::kable(tidySummary, digits = 5)
+```
+
+## And Now Things Can Get Crazy
+
+This text would merely describe my results. I might offer my model's equation: 
+
+$$
+\begin{aligned}
+  \hat{rating} = `r   tidySummary$estimate[which(tidySummary$term == "(Intercept)")]`\, + complaints * `r tidySummary$estimate[which(tidySummary$term == "complaints")]`\, + \\ privilges * `r tidySummary$estimate[which(tidySummary$term == "privileges")]`\, + \\ learning * `r tidySummary$estimate[which(tidySummary$term == "learning")]`
+  \end{aligned}
+$$
+
+Then, I might explain something about the "complaints" variable: `r ifelse(tidySummary$p.value[which(tidySummary$term == "complaints")] < .05, "Complaints is significant at p < .05", "Complaints is not significant at p <.05")`.
+
+
+## Peeking Behind The Curtain
+
+That might have looked like just plain text.
+
+But there is code living behind the words:
+
+```{r, eval = FALSE}
+ifelse(tidySummary$p.value[which(tidySummary$term == "complaints")] < .05, 
+       "Complaints is significant at p < .05", 
+       "Complaints is not significant at p <.05")
+```
+
+
+## A Word About Functions
+
+> "If you are going to do something more than twice, write a function." -- MC
+
+```{r}
+pValueWriter = function(dat, varName) {
+  ifelse(dat$p.value[which(dat$term == varName)] < .05, 
+         paste(varName, " is significant at p < .05", sep = ""), 
+         paste(varName, " is not significant at p <.05", sep = ""))
+}
+```
+
+Copying and pasting, while not inherently bad, can lead to future pain.
+
+## Tables Should Not Hold You Back
+
+How do you generally create your tables?
+
+- Word?
+
+- $\LaTeX$?
+
+- Something else?
+
+##
+
+```{r, eval = TRUE, results="asis", echo = FALSE}
+stargazer(linear.1, linear.2, 
+          title="Regression Results", type = "html", 
+          style = "qje")
+```
+
+
+## Helpful Tools
+
+## Git
+
+Collaboration
+
+More importantly -- version control.
+
+There are many flavors of Git:
+
+- GitHub
+
+- GitLab
+
+- BitBucket
+
+## Markdown
+
+Markup language for document creation.
+
+Primary aim is web, but can do others.
+
+## $\LaTeX$
+
+Document creation
+
+- Most, but not all, major stat packages have some native bindings.
+
+## RMarkdown & knitr
+
+Puts everything together in one tidy source.
+
+# Wrapping Up
+
+## We Are Here To Help
+
+*Starting* down the reproducibility path is easy.
+
+*Continuing* down the path is what starts to become onerous.
+

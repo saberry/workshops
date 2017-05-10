@@ -1,0 +1,79 @@
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta name="generator" content="R package animation 2.4.1">
+	<title>Animations Using the R Language</title>
+	<link rel="stylesheet" href="css/reset.css" />
+	<link rel="stylesheet" href="css/styles.css" />
+	<link rel="stylesheet" href="css/scianimator.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/styles/github.min.css">
+
+	<script src="js/jquery-1.4.4.min.js"></script>
+	<script src="js/jquery.scianimator.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/highlight.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/languages/r.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+
+</head>
+<body>
+
+	<div class="scianimator"><div id="alphaPlot" style="display: inline-block;"></div></div>
+	<div class="scianimator" style="width: 480px; text-align: left"><pre><code class="r">## Animations generated in R version 3.3.0 (2016-05-03)
+##   using the package animation
+library(animation)
+library(gapminder)
+library(ggthemes)
+library(DT)
+library(broom)
+library(data.table)
+library(corrplot)
+library(gganimate)
+library(dplyr)
+library(dygraphs)
+library(plotly)
+library(lazerhawk)
+library(ggplot2)
+ggplot(df, aes(x, y)) + geom_point() + theme_trueMinimal()
+ggplot(df, aes(x, y)) + geom_point(alpha = 0.5) + theme_trueMinimal()
+ggplot(df, aes(x, y)) + geom_point(alpha = 0.1) + theme_trueMinimal()
+ggplot(df, aes(x, y)) + geom_point(alpha = 0.075) + theme_trueMinimal()
+## R version 3.3.0 (2016-05-03)
+## Platform: x86_64-w64-mingw32/x64 (64-bit)
+## Other packages: animation 2.4.1, gapminder 0.2.0, ggthemes 3.2.0, DT 0.1, broom 0.4.0, data.table 1.9.6, corrplot
+## 0.77, gganimate 0.1, dplyr 0.5.0, dygraphs 0.9, plotly 3.6.0, lazerhawk 0.1.5, ggplot2 2.1.0</code></pre></div>
+	<script src="js/alphaPlot.js"></script>
+	<div class="scianimator"><div id="test" style="display: inline-block;"></div></div>
+	<div class="scianimator" style="width: 480px; text-align: left"><pre><code class="r">## Animations generated in R version 3.3.0 (2016-05-03)
+##   using the package animation
+library(dplyr)
+library(scales)
+library(ggthemes)
+library(lazerhawk)
+library(ggplot2)
+library(mgcv)
+library(nlme)
+ggplot(preProDat, aes(x, y)) + geom_point(size = 4) + geom_point(data = singlePoint, 
+    aes(x, y), color = "red", size = 4) + theme_trueMinimal() + 
+    ggtitle("Color")
+ggplot(preProDat, aes(x, y)) + geom_point(size = 4, color = "#ff884d") + 
+    geom_point(data = singlePoint, aes(x, y), color = "#b33b00", 
+        size = 4) + theme_trueMinimal() + ggtitle("Saturation")
+ggplot(preProDat, aes(x, y)) + geom_point(size = 4) + geom_point(data = singlePoint, 
+    aes(x, y), shape = 15, size = 4) + theme_trueMinimal() + 
+    ggtitle("Shape")
+ggplot(preProDat, aes(x, y)) + geom_point(size = 4) + geom_point(data = singlePoint, 
+    aes(x, y), size = 6) + theme_trueMinimal() + ggtitle("Size")
+ggplot(preProDat, aes(x, y)) + geom_point(size = 4) + geom_jitter(data = singlePoint, 
+    aes(x, y), size = 4, width = 0.25, height = 0.25) + theme_trueMinimal() + 
+    ggtitle("Density")
+ggplot(preProDat, aes(x, y)) + geom_point(size = 4, shape = 124) + 
+    geom_point(data = singlePoint, aes(x, y), size = 4, shape = 92) + 
+    theme_trueMinimal() + ggtitle("Orientation")
+## R version 3.3.0 (2016-05-03)
+## Platform: x86_64-w64-mingw32/x64 (64-bit)
+## Other packages: dplyr 0.5.0, scales 0.4.0, ggthemes 3.2.0, lazerhawk 0.1.5, ggplot2 2.1.0, mgcv 1.8-12, nlme 3.1-128</code></pre></div>
+	<script src="js/test.js"></script>
+<!-- highlight R code -->
+
+</body>
+</html>

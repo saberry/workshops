@@ -1,0 +1,315 @@
+---
+title: "Latent Variable Models"
+output:
+  revealjs::revealjs_presentation:
+    theme: night
+    highlight: zenburn
+    center: true
+    transition: fade
+    css: clean.css
+    slide_level: 2
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE, warning = FALSE, error = FALSE, message = FALSE, fig.align = "center")
+library(DiagrammeR)
+```
+
+
+## The World Of Matrix Factorization
+
+## Dimension Reduction
+
+In a nutshell:
+
+We have many variables.
+
+We need to reduce the number of variables.
+
+We extract components from the entire set of variables.
+
+We want to be able to retain as much information from those components.
+
+## PCA & FA
+
+Principal Components Analysis (PCA) and Factor Analysis (FA) are frequently considered to be synonymous.
+
+While they share a common goal in dimension reduction, there are some huge differences between them.
+
+## PCA
+
+Typically, the components from a PCA are restricted so they do not correlate with each.
+
+PCA (shockingly) assumes no measurement error!
+
+Scores (more on this later) don't mean what one might think.
+
+SPSS users are likely aware that this is the default for the factor analysis menu.
+
+The causal direction is a very important issue here.
+
+## PCA -- Causal Flow
+
+```{r, echo = FALSE}
+
+grViz("
+digraph dot {
+
+graph [layout = dot, 
+rankdir = BT]
+
+node [shape = square,
+      style = filled,
+      color = paleturquoise]
+pancake
+
+node [shape = oval, 
+      fillcolor = thistle]
+eggs; milk; sugar; butter; flour
+
+edge [color = grey]
+eggs -> {pancake}
+milk -> {pancake}
+sugar -> {pancake}
+butter -> {pancake}
+flour -> {pancake}
+}")
+
+```
+
+
+## FA
+
+Factor rotations can be orthogonal or oblique.
+
+The correlation matrix is constructed by including only variance common amongst the variables.
+
+*Communality* is the sum of the squared loadings.
+
+Scores reflect the underlying latent variable.
+
+## FA -- Causal Flow
+
+```{r, echo = FALSE}
+grViz("
+digraph dot {
+
+graph [layout = dot]
+
+node [shape = square,
+      style = filled,
+      color = paleturquoise]
+pancake
+
+node [shape = oval, 
+      fillcolor = thistle]
+eggs; milk; sugar; butter; flour
+
+edge [color = grey]
+pancake -> {eggs milk sugar butter flour}
+}")
+
+```
+
+## Exploratory Factor Analysis 
+
+## Number Of Factors
+
+We all learned about the "elbow" and Kaiser.
+
+```{r, echo = FALSE}
+psych::scree(attitude)
+```
+
+## Doing Better
+
+We can use *BIC* for model comparisons.
+
+We can also use *parallel analysis* if we want to work in an *a prior* setting.
+
+- PA does exhibit some sample size shenanigans.
+
+## Reliability
+
+Believe it or not, Cronbach's $\alpha$ is not the only measure of reliability!
+
+It is incredibly easy to inflate and is driven by item number and correlation!
+
+If you have anything other than a uni-dimensional factor structure, $\alpha$ is not an appropriate measure of reliability.
+
+I might suggest McDonald's $\omega$. 
+
+$\omega$ can take a few different forms.
+
+$\omega_t$ provides a proportion of variance not unique to the factors.
+
+$\omega_h$ is associated with the general factor in a hierarchical structure.
+
+## $\omega_h$
+
+```{r, echo = FALSE}
+library(psych)
+
+v9 <- sim.hierarchical()
+
+myOmega = omega(v9)
+
+omega.diagram(myOmega)
+```
+
+
+## Factor Scores
+
+Frequently constructed as simple aggregates (e.g., sum, mean).
+
+This assumes, however, that the variables have equal loadings.
+
+And...they don't have any error.
+
+They also do not reflect the latent variable.
+
+They generally require recoding to happen.
+
+## Factor Scores
+
+Thurstone (regression) and Barlett scores are common.
+
+Thurstone scores are pretty easy to produce:
+
+
+$$ S = XW $$
+$$ W = R^{-1}F $$
+
+$X$ are the observed scores, $R$ is the correlation matrix, and $F$ is the factor loading matrix.
+
+
+## Confirmatory Factor Analysis
+
+Let us first jump over one big hurdle -- sample size!
+
+Rules of thumb abound for all matters related to sample size.
+
+Many estimators exist to deal with the issue of small, ill-behaved data.
+
+They do not, however, mask the problem all together.
+
+## Measurement Invariance
+
+### Are comparisons possible?
+
+Configural -- same model for each group
+
+Weak -- equal unstandardized pattern coefficients
+
+Strong -- equal unstandardized intercepts for indicators
+
+Strict -- equal vcov
+
+
+
+## Item Response Theory
+
+Although PCA and FA exist outside of testing (they have rich traditions in Biology), we are still talking about *Classical Testing Theory*.
+
+Item Response Theory offers a different take on "testing".
+
+With IRT, we are examining the items and the person.
+
+The main goal is to develop items that will *discriminate* between different *theta* levels.
+
+## Flexible IRT
+
+IRT is often (incorrectly) assumed to be for typical testing scenarios.
+
+IRT is not just for dichotomous variables, but also polytomous variables.
+
+IRT models can also contain different parameters (1PL, 2PL, 3PL, 4PL).
+
+Error is not assumed to be consistent across individuals.
+
+Models are not sample dependent.
+
+Item difficulty and thetas can be compared.
+
+## Item Characteristic Curves
+
+Discrimination and Difficulty!
+
+```{r, echo = FALSE}
+library(mirt)
+
+dat <- expand.table(LSAT7)
+
+idealpt <- mirt(dat, 1, verbose = FALSE)
+
+plot(idealpt, type = 'trace', facet_items = FALSE)
+```
+
+
+## Crawling Out Of The Continuum Minima
+
+The latent variable world is much bigger than the "underlying continuum" world that we have been talking about.
+
+Latent variables are everywhere and finding them is fun.
+
+## Latent Dirichlet Allocation
+
+LDA was developed by the superstars of the machine learning world.
+
+The Dirichlet distribution is useful in many places.
+
+But it is likely best known for one particular form of latent variable model...
+
+## Topic Models!
+
+While we can respect its place in a historical sense, content analysis is antiquated.
+
+With topic models (and the LDA and MCMC that live in the weeds), we can do things with text that humans could never do.
+
+For example...how long would it take you to read 10000 Amazon reviews?
+
+## 10000 Amazon Reviews
+
+```{r, echo = FALSE}
+load("C:/Users/sberry5/Documents/class/lectureSlides/reviewTopicModel.RData")
+
+library(stm)
+
+plot.STM(reviewTM)
+```
+
+
+## Mixture Models
+
+```{r, echo = FALSE}
+library(ggplot2)
+
+set.seed(1234)
+erupt1 = rnorm(150, mean=2, sd=.25)
+erupt2 = rnorm(150, mean=4.5, sd=.25)
+mixed = sample(c(erupt1, erupt2))
+
+ggplot() +
+  geom_density(aes(x = mixed)) +
+  theme_minimal()
+
+```
+
+## Clustering
+
+```{r, echo = FALSE}
+library(flexmix)
+mod = flexmix(eruptions~1,  data=faithful, k = 2)
+
+eruptionsNew = data.frame(faithful, cluster = as.factor(mod@cluster))
+
+ggplot(eruptionsNew, aes(eruptions, waiting, color = cluster)) +
+  geom_point() +
+  theme_minimal()
+```
+
+## Wrapping Up
+
+No matter what research world you currently live in, latent variables are everywhere.
+
+Not only are they everywhere, but they are just waiting to be used.

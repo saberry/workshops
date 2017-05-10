@@ -6,6 +6,11 @@
    color: #ff5500;
 }
 
+.neonBlue {
+   color: #4F8EF7;
+   text-shadow: 1px 0px 20px #E64093;
+}
+
 .reveal .progress span {
     display: none;
 }

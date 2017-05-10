@@ -1,0 +1,31 @@
+---
+title: "An Alternative View"
+output: pdf_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = FALSE, warning = FALSE, error = FALSE, message = FALSE)
+```
+
+
+
+
+## Documents
+
+Your data and code can "live" within documents.
+
+```{r, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE, error = TRUE}
+library(stargazer)
+linear.1 <- lm(rating ~ complaints + privileges, data=attitude)
+linear.2 <- lm(rating ~ complaints + privileges + learning, data=attitude)
+tidySummary = broom::tidy(linear.2)
+knitr::kable(tidySummary, digits = 5)
+```
+
+
+
+```{r, eval = TRUE, results="asis", echo = FALSE}
+stargazer(linear.1, linear.2, 
+          title="Regression Results",  style = "qje")
+```
+
+

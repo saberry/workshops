@@ -1,0 +1,99 @@
+---
+title: "Qualtircs Data Demonstration"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+
+library(qualtricsR); library(dplyr); library(wordcloud); 
+library(ggplot2); library(plotly)
+
+demoData = qualtricsR::importQualtricsData("sberry5@nd.edu#nd", 
+                                "DSfaY34hc6jFdTOHiEns1sFf4IOtfuJbB15O0Xz2", 
+                                surveyID = "SV_byBikvMrd0k9NJj", 
+                                dropExtra = FALSE)
+
+demoData$loatheEnjoy = ordered(as.numeric(demoData$loatheEnjoy), 
+                               levels = 1:5, 
+                               labels = c("I very much loathe Qualtrics", 
+                                          "I simply loathe Qualtrics", 
+                                          "I am generally neutral about Qualtrics", 
+                                          "I simply enjoy Qualtrics", 
+                                          "I very much enjoy Qualtrics"))
+
+demoData$letterCount = as.numeric(demoData$letterCount)
+
+demoData$timeSeconds = as.numeric(demoData$Q_TotalDuration)
+
+demoData$browser = as.factor(demoData$Q3_1_TEXT)
+
+
+```
+
+## Results {.tabset .tabset-fade .tabset-pills}
+
+
+### Multiple Choice
+
+We can see the outcomes of our multiple choice question:
+
+```{r, mcPlot}
+ggplot(demoData, aes(loatheEnjoy)) +
+  geom_bar(fill = "#88ccee") +
+  scale_x_discrete(name = "", 
+                   breaks = c("I very much loathe Qualtrics", 
+                              "I simply loathe Qualtrics", 
+                              "I am generally neutral about Qualtrics", 
+                              "I simply enjoy Qualtrics", 
+                              "I very much enjoy Qualtrics"), 
+                   labels = c("I very much\nloathe Qualtrics", 
+                              "I simply\nloathe Qualtrics", 
+                              "I am generally\nneutral about Qualtrics", 
+                              "I simply\nenjoy Qualtrics", 
+                              "I very much\nenjoy Qualtrics")) +
+  theme_minimal()
+  
+```
+
+
+### Text
+
+Here we have a wordcloud (!= text analysis) of our text responses: 
+
+```{r wordcloudDemo}
+wordcloud(demoData$oneWord)
+```
+
+## Meta Data
+
+### Average Time
+
+```{r}
+mean(demoData$timeSeconds, na.rm = TRUE)
+```
+
+### Browser
+
+```{r}
+summary(demoData$browser)
+```
+
+
+## Analyses
+
+### Time and Letter Count
+
+```{r}
+timeCount = ggplot(demoData, aes(timeSeconds, letterCount)) +
+  geom_point(alpha = .5, size = 3) +
+  geom_smooth(method = "lm", se = FALSE, color = "#5A9DB4") +
+  geom_smooth(span = .8, color = "#CE7058") +
+  theme_minimal()
+
+plotly::ggplotly(timeCount)
+```

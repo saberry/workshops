@@ -1,0 +1,174 @@
+---
+title: "Research And Ethics"
+output:
+  revealjs::revealjs_presentation:
+    css: clean.css
+    theme: night
+    highlight: haddock
+    center: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## IRB
+
+Protection for:
+
+<span class="fragment fade-up">participants</span>
+
+<span class="fragment fade-up">researchers</span>
+
+<span class="fragment fade-up">university</span>
+
+
+## Why Are We Concerned With Ethics
+
+### History
+
+<span class="fragment fade-up">The government</span>
+
+<span class="fragment fade-up">Medicine</span>
+
+<span class="fragment fade-up">Psychology</span>
+
+
+## Ugly History
+
+Let's play a game...
+
+
+
+## {data-background-image="http://cdn8.openculture.com/wp-content/uploads/2015/01/28205719/Albert-and-rabbit-1024x718-e1422507447605.jpg"}
+
+## {data-background-image="http://www.psychologicalscience.org/redesign/wp-content/uploads/2013/04/Milgram-Shock-1_edited.jpg"}
+
+## {data-background-image="http://media0.giphy.com/media/Vhk9HwPx3TO0w/giphy.gif"}
+
+
+## A Bit More Contemporary
+
+The Belmont Report
+
+Health and Human Services
+
+## 
+
+HHS has guidelines about dealing with *human subjects*.
+
+## The Central Tenants Of Human Subjects Research
+
+<span class="fragment fade-up">Interaction</span>
+
+<span class="fragment fade-up">Identification</span>
+
+## My Name's Pit...
+
+A million ways to rationalize why you don't need the IRB.
+
+##
+
+"I'm not doing lab work."
+
+"It's just a survey."
+
+"They don't need to consent."
+
+
+## Harm
+
+We should always be thinking about harm to people.
+
+## {data-background-image="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/Dollarnote_siegel_hq.jpg/595px-Dollarnote_siegel_hq.jpg"}
+
+## What Do You Care?
+
+Let's Forget Academia For A Minute
+
+Using IRB principles is never a bad idea...
+
+## {data-background-image="https://media.giphy.com/media/xe93JlfI947fi/giphy.gif"}
+
+## Group Time
+
+Let's consider the following:
+
+Employee emails
+
+Employee performance reviews
+
+Foreign-owned business
+
+Organizational transitions (Mergers)
+
+Data transferred with external drive
+
+## Do Three Things
+
+What are the ethical considerations?
+
+What harm can come?
+
+What protections can be put in place?
+
+## How Does This All Work With BIG DATA
+
+<span class="fragment fade-up">Identity</span>
+
+<span class="fragment fade-up">Consent</span>
+
+## Identity
+
+How much data do you need to identify an individual person?
+
+## Is Data Ever Anonymous?
+
+Were there any take-aways from Chapter 2 in Lane?
+
+<span class="fragment fade-up">*Unreachability*</span>
+
+## 
+
+Which would you prefer?
+
+## The Tyranny Of The Minority ## {data-background-image="https://threatpost.com/files/2013/04/graph.jpg"}
+
+
+## The Private/Public Divide
+
+What is public data?
+
+What is private data?
+
+## Public
+
+Can an average person find the data?
+
+## Private
+
+Does the person have a reasonable right to privacy?
+
+## Twitter
+
+Where does Twitter fall?
+
+## Consent
+
+Specifically, informed consent.
+
+Consent ties in nicely with identity.
+
+## Facebook Mood Manipulation
+
+Does anyone besides Pepperidge Farms remember this?
+
+What were the concerns?
+
+## Data Privacy And Reproducibility
+
+What to do?
+
+## Wrapping Up
+
+Think in terms of conspiracy.

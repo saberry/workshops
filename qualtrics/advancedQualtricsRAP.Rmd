@@ -1,0 +1,284 @@
+---
+title: "Qualtrics: Beyond The Menus"
+output:
+  revealjs::revealjs_presentation:
+    theme: night
+    highlight: zenburn
+    center: true
+    transition: fade
+    css: clean.css
+    slide_level: 2
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## A Simple Request
+
+If possible, please navigate to the following link: 
+
+tinyurl.com/advQualDemo
+
+## Cascading Style Sheets
+
+CSS gives the web style.
+
+Qualtrics gives you full control of the CSS for your surveys.
+
+## Changing Skins -- Easy
+
+You can click around in the Look & Feel menu.
+
+## Changing Skins -- Powerful
+
+Go to Look & Feel > Advanced > Add Custom CSS
+
+## Changing Skins For Mobile
+
+Buttons are radio buttons.
+
+The Qualtrics 2014 works very well for mobile.
+
+It is pretty bland, though, so spruce it some!
+
+## With Great Power...
+
+Having the ability to style everything is great.
+
+It can help make your survey more accessible and branding always looks good.
+
+You will need to know about:
+
+<span class="fragment fade-up">web-based survey design</span>
+
+<span class="fragment fade-up">human-computer interaction</span>
+
+<span class="fragment fade-up">web standards</span>
+
+<span class="fragment fade-up"><a href="https://nd.qualtrics.com/jfe/form/SV_2a7C6V4BhgqXs5n">Ye Have Been Warned!</a></span>
+
+## JavaScript
+
+JavaScript is a core technology for web content.
+
+Try browsing the web with a script blocker!
+
+It is responsible for everything from very basic sliders to some really advanced dynamic visualizations.
+
+What is Qualtrics other than a series of pages?
+
+## The Many Libraries of JS
+
+JS has many different libraries:
+
+<span class="func">jQuery.js</span> is everywhere (autocompletes anyone?)
+
+<span class="func">Raphael.js</span> is great for creating svg
+
+<span class="func">D3.js</span> powers interactive visualizations (NYT)
+
+<span class="func">Prototype</span> 
+
+<span class="func">Reveal.js</span>
+
+
+## How To Use JS
+
+There are a few different places you can put your JS.
+
+Within the addOnLoad function in the JS editor.
+
+In the JS editor without the addOnLoad function.
+
+In the header.
+
+In the question source.
+
+
+## Why?
+
+Flow control.
+
+Creating new variables.
+
+Fun times!
+
+## Flow Control
+
+Can be as simple as this:
+
+```{r, eval = FALSE}
+Qualtrics.SurveyEngine.addOnload(function() {
+  
+  this.questionclick = function(event, element) {
+    if (this.getChoiceValue(1) == true) {
+      this.clickPreviousButton()
+    }
+  }
+  
+})
+
+```
+
+
+
+## Flow Control Example
+
+<a href="https://nd.qualtrics.com/SE/?SID=SV_3BN1Sxxz4XlKRLL">Glasses Example</a>
+
+
+```{r, eval = FALSE}
+Qualtrics.SurveyEngine.addOnload(function()
+{
+  $('NextButton') && $('NextButton').hide();	
+  
+  $('PreviousButton') && $('PreviousButton').hide();	
+  
+  var ros1 = document.getElementById("QR~QID2~1");
+  var ros2 = document.getElementById("QR~QID2~2");
+  var ros3 = document.getElementById("QR~QID2~3");
+  
+  ros1.disabled = true;
+  ros2.disabled = true;
+  ros3.disabled = true;
+  
+  function enableButton(){ros1.disabled = false;
+  ros2.disabled = false;
+  ros3.disabled = false;}
+  
+  setTimeout(enableButton, 10000)
+  
+  this.questionclick = function(event,element){
+    if (element.type == 'radio'){
+      this.clickNextButton();
+    }
+  }	
+});
+```
+
+
+## New Variables
+
+Using a combination of embedded data and JS enables us to do some interesting things.
+
+## Good Times
+
+We can also use JS to do some interesting things.
+
+
+## { data-background-image="https://media.giphy.com/media/xpPLaEYLy637O/giphy.gif" data-background-size="400px" data-background-repeat="repeat"}
+
+
+## Regular Expression
+
+Regular expressions (regex) are used to match patterns in strings.
+
+Think about "find & replace" and you are essentially there...
+
+Although very powerful, regex is a bit confusing at first blush.
+
+<span class="fragment fade-up"><span class="func">\\$[0-9]+.[0-9]{0, 2}</span></span>
+
+<span class="fragment fade-up"><span class="func">\^[a-zA-Z]+\s.*[0-9]{4}\S$</span></span>
+
+## Why Would I Need That?
+
+Display Logic for questions, embedded data, panels, and IP.
+
+Sometimes branching on certain text is helpful.
+
+Survey Flow
+
+Custom Validation
+
+Reports
+
+## Helpful Chunks
+
+
+| Expression    |       Action    |
+|:---------------:|:-----------------:|
+| [0-9]         | Number range    |
+| [a-z]         | Letter range    |
+| ^             | String start    |
+| $             | String end      |
+| .             | Wild card       |
+| *             | 0 or more times |
+| +             | 1 or more times |
+| \|            | Or operator     |
+| ()            | Grouping        |
+| {x,y}         | Specific matches|
+| ?             | Ungreedy match  |
+
+
+## Application Programming Interface
+
+As an add-on (read: extra charge), Qualtrics provides an API.
+
+Notre Dame was gracious enough to acquire this add-on.
+
+## "API! I Don't Even Know What That Is!"
+
+The most basic explanation is that APIs allow programs to talk to each other.
+
+In addition to program-to-program, APIs also allow programs to chat with servers.
+
+This is where the Qualtrics API becomes useful for us.
+
+## Useful API Functions
+
+https://api.qualtrics.com/
+
+List Surveys
+
+Import Survey
+
+Create Response Export
+
+## When To Use It
+
+Using the API is probably the most difficult thing that we have discussed.
+
+It really is only useful if you want to integrate it with your statistical programs.
+
+Some programs make it easy (any OOPL), while others make it difficult/impossible.
+
+There are two versions out there: V2 and V3.
+
+
+## Why To Use It -- Efficiency
+
+```{r, eval = FALSE}
+exportQualtricsData = function (username, token, format, surveyID) {
+  url = paste("http://survey.qualtrics.com//WRAPI/ControlPanel/api.php?Version=2.4&
+              Request=getLegacyResponseData", 
+              "&User=", userName, 
+              "&Token=", userToken,
+              "&Format=", format, 
+              "&SurveyID=", surveyID, 
+              "&ExportTags=1", 
+              sep = "")
+  
+  url = gsub("[@]", "%40", url) %>% 
+    gsub("[#]", "%23", .)
+  
+  exportQualtricsData = read.csv(url, stringsAsFactors = FALSE)
+}
+
+exampleData = exportQualtricsData("userName@nd.edu#nd", "userToken", 
+                                  "CSV", "surveyID")
+```
+
+
+## { data-background-image="https://media.giphy.com/media/3oz8xOvhnSpVOs9xza/giphy.gif"}
+
+
+
+## Wrapping Up
+
+Right out of the box, Qualtrics can do just about anything you need.
+
+Sometimes, though, we need to add features.
+
+With a little bit of knowledge and fearlessness, we can pretty much do whatever we want.

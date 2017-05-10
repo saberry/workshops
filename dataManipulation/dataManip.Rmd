@@ -1,0 +1,424 @@
+---
+title: "Practical Data Manipulation"
+output:
+  revealjs::revealjs_presentation:
+    theme: night
+    highlight: zenburn
+    center: true
+    transition: fade
+    css: clean.css
+    slide_level: 2
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+
+library(dplyr); library(tidyr); library(data.table); library(magrittr)
+library(stringr)
+
+```
+
+
+## base & stats
+
+You could get by only using the <span class="pack">base</span> and <span class="pack">stats</span> packages.
+
+They are both powerful enough to do practically anything that you would ever need to do.
+
+## The Downside
+
+$Power + Flexibility = Complexity$
+
+This was a common line for subsetting data:
+
+```{r}
+mtcars[which(mtcars$mpg >= mean(mtcars$mpg) & mtcars$cyl == 6), ]
+```
+
+
+## Subsetting Variables
+
+```{r, eval = FALSE}
+varList = c("country", 
+            paste("iso", 2:3, sep = ""),
+            grep(".*sp.*", colnames(who), value = TRUE))
+
+newDat = who[, colnames(who) %in% varList]
+```
+
+
+
+## The Present
+
+The <span class="pack">base</span> approach is not intuitive.
+
+That is where <span class="pack">dplyr</span> enters the arena.
+
+It is arguably one of the most popular R packages.
+
+
+## The Grammar Of Data Manipulation
+
+Intuitive names are the first improvement:
+
+<p>
+<span class="fragment fade-up"><span class="func">arrange</span>|</span>
+<span class="fragment fade-up"><span class="func">between</span>|</span>
+<span class="fragment fade-up"><span class="func">coalesce</span>|</span>
+<span class="fragment fade-up"><span class="func">distinct</span>|</span>
+<span class="fragment fade-up"><span class="func">filter</span>|</span>
+<span class="fragment fade-up"><span class="func">group_by</span>|</span>
+<span class="fragment fade-up"><span class="func">left_join</span>|</span>
+<span class="fragment fade-up"><span class="func">mutate</span>|</span>
+<span class="fragment fade-up"><span class="func">select</span>|</span>
+<span class="fragment fade-up"><span class="func">summarize</span>|</span>
+<span class="fragment fade-up"><span class="func">tally</span>|</span>
+<span class="fragment fade-up"><span class="func">top_n</span></span>
+<p>
+
+<p class="fragment fade-up">Just given the function names, we can probably guess what each of these do.</p>
+
+## Translating Old To New
+
+From this:
+
+```{r}
+mtcars[which(mtcars$mpg >= mean(mtcars$mpg) & mtcars$cyl == 6), ]
+```
+
+
+To this:
+
+```{r}
+filter(mtcars, mpg >= mean(mpg) & cyl == 6)
+```
+
+## Wrangling Made Easy
+
+```{r, eval = FALSE}
+varList = c("country", 
+            paste("iso", 2:3, sep = ""),
+            grep(".*sp.*", colnames(who), 
+                 value = TRUE))
+
+newDat = who[, colnames(who) %in% varList]
+```
+
+
+```{r, eval = FALSE}
+select(who, country, num_range("iso", 2:3), contains("sp"))
+```
+
+
+## SQL-like Joins
+
+<span class="pack">dplyr</span> also provides several different joins.
+
+<span class="func">left_join</span> -- x rows and all columns
+
+<span class="func">right_join</span> -- y rows and all columns
+
+<span class="func">inner_join</span> -- all matching rows and all columns 
+
+<span class="func">full_join</span> -- all rows and all columns
+
+<span class="func">anti_join</span> -- return x rows where there are no y matches 
+
+## Joining Data
+
+```{r}
+df1 = data.frame(ticks = c("AAPL", "A", "BFG"), 
+                 revenue = c(10, 30, 50))
+
+df2 = data.frame(tick = c("AAPL", "A", "N"), 
+                 expends = c(5, 15, 25))
+
+inner_join(df1, df2, by = c("ticks" = "tick"))
+```
+
+
+## tidyr
+
+Reshaping data can be a perilous excursion.
+
+Plotting functions and many analyses need long data.
+
+R has packages for reshaping (e.g., <span class="pack">reshape2</span>).
+
+As good as those are, <span class="pack">tidyr</span> makes reshaping too easy.
+
+It also has very clear functions:
+
+<span class="func">gather</span>, <span class="func">spread</span>, <span class="func">unite</span>, <span class="func">separate</span>
+
+
+## Wide To Long
+
+```{r}
+head(gather(mtcars, key = variable, value = value))
+```
+
+
+## Wide To Long -- Grouped
+
+```{r}
+head(gather(mtcars, key = variable, value = value, -cyl))
+```
+
+## Separate Columns
+
+```{r}
+(df = data.frame(executiveName = c("Jon Crutchfield", "Father Mark", "Roger Huang")))
+```
+
+```{r}
+separate(df, executiveName, c("firstName", "lastName"))
+```
+
+
+
+## magrittr
+
+![](https://upload.wikimedia.org/wikipedia/en/b/b9/MagrittePipe.jpg)
+
+> The famous pipe. How people reproached me for it! And yet, could you stuff my pipe? No, it's just a representation, is it not? So if I had written on my picture 'This is a pipe', I'd have been lying!
+
+## Pipes
+
+The <span class="pack">magrittr</span> package contains a number of different pipes.
+
+<p>
+<span class="fragment fade-up"><span class="func">%$%</span>|</span>
+<span class="fragment fade-up"><span class="func">%\<\>%</span>|</span>
+<span class="fragment fade-up"><span class="func">%\>%</span>|</span>
+<span class="fragment fade-up"><span class="func">%T\>%</span></span>
+<p>
+
+>- The most popular one is likely <span class="func">%\>%</span>.
+
+>- It is functionally equivalent to the Unix <span class="func">|</span>
+
+## Aliases
+
+R has some mysterious functions.
+
+<span class="pack">magrittr</span> gives names to some of these rather archiac functions.
+
+<span class="func">\`[[\`</span> = <span class="fragment fade-up"><span class="func">extract2</span></span>
+
+
+## Action Sequence
+
+```{r}
+`[[`(mtcars, 1)
+```
+
+```{r}
+extract2(mtcars, 1)
+```
+
+
+## Can't Stop The Flow
+
+Using these three packages together gives us ultimate power.
+
+We can pipe functions together until we get what we need.
+
+- You can also pipe to other functions (e.g., <span class="func">lm</span>).
+
+## Days Of Yore
+
+I want years greater than 2000, only columns with "sn", averaged by country, and taken from wide to long.
+
+```{r}
+
+who1 = who[who$year > 2000, grep("country|.*sn.*", colnames(who))]
+
+who1 = na.omit(who1)
+
+colList = list(grep("*sn.*", colnames(who1), value = TRUE))
+
+res = lapply(colList, 
+             function(x) aggregate(who1[x], by = list(who1$country), FUN = mean))
+```
+
+## And It Don't Stop...
+
+```{r}
+
+res = as.data.frame(res)
+
+row.names(res) = res$Group.1
+
+res$Group.1 = NULL
+
+res = reshape(res, idvar = "country", ids = row.names(res), 
+              times = names(res), timevar = "var",
+              varying = list(1:14), 
+              direction = "long")
+
+head(res)
+```
+
+
+## There Has To Be A Better Way
+
+```{r}
+
+who1 = who %>% 
+  filter(year > 2000) %>%
+  select(country, contains("sn")) %>%
+  na.omit() %>%
+  group_by(country) %>% 
+  summarize_all(funs(mean(., na.rm = TRUE))) %>% 
+  gather(key = variable, value = value, -country)
+
+head(who1)
+
+```
+
+
+## data.table
+
+The <span class="pack">data.table</span> package is a pretty far departure from <span class="pack">dplyr</span>.
+
+Everything works with *i*, *j*, *k* indexing.
+
+$$data.table(i, j, k) = data.table[which, what, by]$$
+
+While <span class="pack">dplyr</span> is clear and concise, <span class="pack">data.table</span> is slightly confusing.
+
+What it lacks in elegance, it makes up for in speed!
+
+## That Is Fast
+
+
+```{r}
+whoDT = data.table(who, key = "country")
+
+dtTest = whoDT[, mean(new_sp_m014, na.rm = TRUE), by = country]
+```
+
+
+```{r}
+dplyrTest = who %>% 
+  group_by(country) %>% 
+  summarize(mean(new_sp_m014, na.rm = TRUE))
+```
+
+```{r}
+microbenchmark::microbenchmark(who %>% 
+  group_by(country) %>% 
+  summarize(mean(new_sp_m014, na.rm = TRUE)), 
+  whoDT[, mean(new_sp_m014, na.rm = TRUE), by = country], 
+  unit = "s", times = 500)
+```
+
+## Convenience Functions
+
+There are a few different convenience functions within <span class="pack">data.table</span>.
+
+These two are incredibly helpful.
+
+<span class="func">.I</span> = seq_len(nrow(x))
+
+<span class="func">.GRP</span> = group counter
+
+
+## Chaining Indices
+
+Just like the pipes we previously saw, <span class="pack">data.table</span> lets us continuously chain statements together.
+
+```{r}
+whoDT[, mean(new_sp_m014, na.rm = TRUE), by = country][, log(V1), by = country]
+```
+
+It can get ugly (and fast)!
+
+## A Real Example
+
+```{r, eval = FALSE}
+mrktingName = mrktingName[, c("Ticker.Symbol", "Fiscal.Year",
+                              "howLongPerson", "personID") :=
+                            list(Ticker.Symbol, Fiscal.Year,
+                                 seq(.N), .GRP),
+                          by = list(name)]
+[, numSeq := seq(min(Fiscal.Year), 
+                 max(Fiscal.Year)), by = list(personID)]
+[, runningTotal := ifelse(Fiscal.Year == numSeq, seq(.N), 1L), 
+by = list(Ticker.Symbol, personID)]
+```
+
+
+## What Do R And Neapolitan Ice Cream Have In Common?
+
+<p class="fragment fade-up">
+You can enjoy all flavors at once!
+</p>
+
+
+## And It Is Just As Tasty...
+
+```{r, eval=TRUE, fig.height=4}
+who %>% 
+  select(country, contains("sp")) %>% 
+  data.table(key = "country") %>% 
+  .[, c("epM25Mean", "epF25Mean") := 
+      list(mean(new_sp_m2534, na.rm = TRUE), mean(new_sp_f2534, na.rm = TRUE)), 
+    by = country] %>% 
+  filter(epM25Mean > 0 & epF25Mean > 0) %>%
+  .[, plot(.$epM25Mean, .$epF25Mean)]
+```
+
+## stringr
+
+<span class="pack">stringr</span> eases string pain.
+
+Unless you have a need to use regex regularly, it can be tricky.
+
+<span class="pack">stringr</span> has a variety of functions to replace <span class="func">grep</span> and <span class="func">gsub</span>.
+
+## Audience Participation Time!
+
+What would the following line do?
+
+<p class="fragment fade-up">
+^\\\\s+|\\\\s+$
+</p>
+
+
+## Trimming Strings
+
+```{r}
+
+x = " Happy Halloween!   "
+
+gsub("^\\s+|\\s+$", "", x)
+
+```
+
+```{r}
+str_trim(x)
+```
+
+## Counting Characters
+
+```{r}
+people = c("Seth Berry", "George Jiang", NA, "Andres Martinez")
+```
+
+```{r}
+nchar(people)
+```
+
+```{r}
+str_count(people)
+```
+
+
+## A Huge Thanks To This Bloke
+
+![](https://avatars0.githubusercontent.com/u/4196?v=3&s=466)
+
+## And A Huge Thanks To You All { data-background-image="https://media.giphy.com/media/aLdiZJmmx4OVW/giphy.gif"}
+

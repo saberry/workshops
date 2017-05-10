@@ -1,0 +1,25 @@
+.pack {
+   color: firebrick;
+}
+
+.neonBlue {
+   color: #38eeff;
+   size: 20px;
+}
+
+
+.func {
+   color: #ff5500;
+}
+
+.reveal .progress span {
+    display: none;
+}
+
+.reveal .playback {
+    display: none;
+}
+
+.reveal .controls {
+    display: none !important;
+}
