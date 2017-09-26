@@ -11,8 +11,9 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE, eval = FALSE)
+knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
 library(dplyr)
+
 ```
 
 
@@ -20,15 +21,9 @@ library(dplyr)
 
 R is more than just a "stats package".
 
-- It is a statistical programming language!
-
 R is an object-oriented programming language.
 
-A common question is, "Can R do *this*?".
-
-- The answer is always, "Yes, but can *you* do it?".
-
-    - Just to give you an idea, <span class="pack">tuneR</span> can be used to make electronic music
+A common question is, "Can R *insert something trivial*?".
 
 ## Is R Really Different?
 
@@ -52,11 +47,8 @@ A common question is, "Can R do *this*?".
 ## Installing packages
 
 ```{r install, eval = FALSE, echo = TRUE}
-install.packages('tidyverse)
+install.packages('tidyverse')
 ```
-
-## {data-background="tidyverseLogo.png"}
-
 
 ## The Basics
 
@@ -66,33 +58,70 @@ You must create an object and you can then call on the object.
 
 - Always be sure to name objects something other than function names!
 
-```{r , eval = FALSE, echo = TRUE}
-### <b>
+```{r , eval = TRUE, echo = TRUE}
+
 numList = 1:5
-###</b>
+
 numList
 ```
 
+## Functions
 
-## dplyr
+Functions are operations on an object. 
+
+```{r, eval = TRUE}
+nonsenseFunction = function(x) {
+  res = (sqrt(x) + sin(x))^2
+  return(res)
+}
+
+test = 1:10
+
+nonsenseFunction(test)
+```
+
+
+## Ready?
+
+Now that you know we are just dealing with objects and functions, you are 90% of the way to R enlightenment.
+
+
+## {data-background="tidyverseLogo.png"}
+
+
+## The tidyverse
+
+The tidyverse is an ecosystem for making data wrangling easy.
+
+<span class="pack">dplyr</span>
+
+<span class="pack">tidyr</span>
+
+<span class="pack">stringr</span>
+
+<span class="pack">magrittr</span>
+
+<span class="pack">rvest</span>
+
+<span class="pack">ggplot2</span>
+
+
+## Riffing With dplyr
 
 The <span class="pack">dplyr</span> package was created to make data manipulation easier.
+
+It provides a sensible and coherent grammar for working with data.
 
 
 ## From this...
 
 ```{r baseRexample1, eval=FALSE, echo = TRUE}
-# two step with grep (searching with regular expressions)
 
 newData = oldData[oldData$Z == 'Yes' & oldData$Q == 'No', ]
-
 cols = c('ID', paste0('X', 1:10), 'var1', 'var2', 
          grep("^Merc[0-9]+", colnames(oldData), value = TRUE))
-
 newData = newData[, cols]
-
 newData = tail(newData, 50)
-
 newData = sort(newData, decreasing = TRUE)
 
 ```
@@ -108,8 +137,45 @@ newData = oldData %>%
 ```
 
 
+## Our Data
+
+<a href="https://en.wikipedia.org/wiki/List_of_highest-grossing_films">Highest Grossing Films</a>
+
+```{r}
+library(rvest); library(xml2)
+
+allTables = read_html("https://en.wikipedia.org/wiki/List_of_highest-grossing_films") %>% 
+  html_table(fill = TRUE)
+
+highestGrossing = allTables %>% 
+  magrittr::extract2(1)
+
+head(highestGrossing)
+```
+
+
+## Congratulations...
+
+You know how to scrape data from the web!
+
+## Our Path Forward
+
+Select variables
+
+Clean and convert strings
+
+Add new variables
+
+Summarize
+
+## Our Destination
+
 
 ## Select
+
+The <span class="func">select</span> function does exactly what it says: it selects variables.
+
+It also has some handy helpers for our convenience:
 
 starts_with
 
@@ -119,17 +185,89 @@ contains
 
 matches
 
+## Action!
+
+```{r}
+highestGrossing = highestGrossing %>% 
+  select(-Rank, -`Reference(s)`)
+
+head(highestGrossing)
+```
+
+## String Cleaning
+
+Strings happen...
+
+```{r}
+library(stringr)
+
+highestGrossing = highestGrossing %>% 
+  mutate(Peak = str_replace(Peak, "[A-Z].*", ""), 
+         Peak = as.numeric(Peak), 
+         gross = as.numeric(str_replace_all(`Worldwide gross`, "\\$|,", ""))) %>% 
+  select(-`Worldwide gross`)
+```
+
+
 ## Filter
 
-## Mutate
+```{r}
+highestGrossing = highestGrossing %>% 
+  filter(Peak != 1 & Peak != max(Peak))
+```
 
-## Coalesce
+
+## Mutate...
+
+#### Momentarily
+
+Our dollar values are nominal, but I think we should add a real dollar column.
+
+First, we will get a GDP deflator table
+
+```{r}
+gdpDeflator2017 = read_html("http://www.multpl.com/gdp-deflator/table") %>% 
+  html_table(trim = TRUE, header = TRUE) %>% 
+  extract2(1) %>% 
+  filter(grepl("2017", Date) == TRUE) %>% 
+  select(-Date) %>% 
+  extract2(1)
+```
+
+```{r}
+gdpDeflator2017
+```
+
+## Using Mutate
+
+Coherent grammar, huh? Would someone like to explain why <span class="func">mutate</span>?
+
+```{r}
+highestGrossing = highestGrossing %>% 
+  mutate(grossReal2017 = gross/(gdpDeflator2017/100))
+```
 
 ## Group_by
 
+## Summarize
+
+## Coalesce
+
+```{r}
+testDF = data.frame(x = c(1:5, rep(NA, 5)), 
+                    y = c(rep(NA, 5), 6:10))
+
+testDF %>% 
+  mutate(z = coalesce(x, y))
+```
+
+
+
+
+
 ## Distinct
 
-## Summarize
+
 
 
 

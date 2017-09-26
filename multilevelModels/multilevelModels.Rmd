@@ -23,13 +23,13 @@ fit = example_model
 
 ## Multilevel Models
 
-## What Are They?
+## Cluster One
 
 Data rarely contains a single level.
 
 People are often nested in groups, groups are observed over years, or people are grouped by treatment levels.
 
-When such levels exist, should we ignore it?
+> - When such levels exist, should we ignore it?
 
 ## Careful With That Axe, Euguene
 
@@ -155,7 +155,7 @@ $e_{ij}$ is the level 1 error.
 $$\beta_{0j} = \gamma_{00} + \gamma_{01}W_j + u_{0j}$$
 
 $$\beta_{1j} = \gamma_{10} + u_{1j}$$
-</br>
+
 $\gamma_{00}$ is the overall intercept. 
 
 $W_j$ is the level 2 predictor.
@@ -198,9 +198,34 @@ Slopes and intercepts are allowed to vary over groups.
 
 Naturally, there are many extensions to multilevel models.
 
-SEM
+- SEM
 
-GLM distribution families and link functions
+- GLM distribution families and link functions
+
+## Obscured By Clouds
+
+Perhaps the most important extension is the nonlinear mixed effect model.
+
+As opposed to *linearization*, nonlinear models actually model the process that created the response.
+
+This leads to better prediction.
+
+## Take Up Thy Stethoscope And Walk
+
+SAS -- *GLIMMIX*
+
+Stata -- *me*
+
+SPSS -- *MIXED*
+
+*Matlab* -- *nlmefit*
+
+Python -- *PyMC3*
+
+R -- *lme4*, *lmer*, *nlme*
+
+*Julia* -- *MixedModels*
+
 
 ## Bayesian Data Analysis
 
@@ -214,7 +239,7 @@ GLM distribution families and link functions
 
 ## What Is It?
 
-We have all likely seen Bayes' Theorum.
+We have all likely seen Bayes' Theorem.
 
 $$ P(A|B) = \frac{P(B|A)P|A}{P|B} $$
 
@@ -234,7 +259,7 @@ Note: At its peak, this is a cycle.
 
 ## Round And Around
 
-![](http://rationalfaith.com/img/scientific_method_770.jpg)
+![](scientific_method_770.jpg)
 
 ## Us And Them
 
@@ -244,20 +269,27 @@ Only you can decide which side you will be on.
 
 ## Probability
 
-Frequentist: I am going to assume that my parameter is zero. What is the probability that my observed parameter is a certain magnitude different than zero?
+> - Frequentist 
 
-Bayesian: What is the probability that my parameter is not zero?
+I am going to assume that my parameter is zero. What is the probability that my observed parameter is a certain magnitude different than zero?
+
+> - Bayesian
+
+What is the probability that my parameter is not zero?
 
 ## Interval Estimates
 
-Frequentist: I will conduct my analyses an infinitie number of times and calculate an interval each time; a certain percentage of intervals will contain the true value. I will now show you one of those intervals.
+> - Frequentist
 
-Bayesian: The probability that the true value falls in this interval is *P*.
+I will conduct my analyses an infinitie number of times and calculate an interval each time; a certain percentage of intervals will contain the true value. I will now show you one of those intervals.
+
+> - Bayesian
+
+The probability that the true value falls in this interval is *P*.
 
 ## Goodbye Blue Sky
 
 The *p*-value that we all know and love is of no consequence to the Bayesian. 
-
 
 ## Welcome To The Machine
 
@@ -266,9 +298,7 @@ The *p*-value that we all know and love is of no consequence to the Bayesian.
 ## 
 
 ```{r, fig.height=5}
-
 plot(fit)
-
 ```
 
 
@@ -286,20 +316,89 @@ pp_check(fit, plotfun = "boxplot")
 
 ##
 
+```{r, echo = FALSE, message = FALSE, include = FALSE}
+test = posterior_vs_prior(fit)
+```
+
 ```{r}
-posterior_vs_prior(fit)
+test + theme(legend.position = "none") + coord_flip()
+```
+
+
+##
+
+```{r, echo = FALSE, message = FALSE, include = FALSE}
+test = posterior_vs_prior(fit, group_by_parameter = TRUE)
+```
+
+```{r}
+test + theme(legend.position = "none") + coord_flip()
 ```
 
 
 ## Two Suns In The Sunset
 
-Bayesian can be applied to anything.
+BDA can be applied to **anything**.
+
+*t*-tests
+
+Any regression
+
+SEM
+
+And...
+
+## Multilevel Bayesian
+
+```{r}
+herdData = lme4::cbpp
+
+form1 = herdData$incidence ~ herdData$size
+
+ggplot(herdData, aes(incidence, size)) + 
+  geom_point() + 
+  geom_smooth(method = "lm") +
+  theme_minimal() +
+  stat_poly_eq(label.x.npc = "left", formula = form1, 
+                aes(label = paste(..eq.label.., ..rr.label.., sep = "~~~")), 
+                parse = TRUE)
+```
+
+
+##
+
+```{r}
+ggplot(herdData, aes(incidence, size)) + 
+  geom_point() + 
+  geom_smooth(method = "lm") + 
+  facet_wrap(~ herd) +
+  theme_minimal()
+```
+
+
+## Bayesian Software
+
+WinBUGS
+
+JAGS
+
+Stan (RStan, PyStan, Matlab)
 
 ## Absolutely Curtains
 
+## What Do You Want From Me?
 Mobile Data Collection
 
 Generalized Additive Models
 
+Using The CRC
+
+Markdown Magic
+
 Making The Most Of Text
 
+Fixed, Random, and Mixed Effects Models
+
+Version Control And Collaboration With Github
+
+Julia
