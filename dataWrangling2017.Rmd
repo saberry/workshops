@@ -1,0 +1,321 @@
+---
+title: "Data Wrangling: R Style"
+output:
+  revealjs::revealjs_presentation:
+    theme: night
+    highlight: zenburn
+    center: true
+    transition: fade
+    css: clean.css
+    slide_level: 2
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, eval = FALSE)
+library(dplyr)
+```
+
+
+## R
+
+R is more than just a "stats package".
+
+- It is a statistical programming language!
+
+R is an object-oriented programming language.
+
+A common question is, "Can R do *this*?".
+
+- The answer is always, "Yes, but can *you* do it?".
+
+    - Just to give you an idea, <span class="pack">tuneR</span> can be used to make electronic music
+
+## Is R Really Different?
+
+* Cost
+
+    * You cannot beat free
+
+* Power
+
+    * Object-oriented programming language with near-infinite flexability
+
+* Open
+
+    * Anyone can contribute to it and/or look at function code
+
+* Maintainers/Package Creators
+
+    * The people who develop methods create packages for those methods
+    
+  
+## Installing packages
+
+```{r install, eval = FALSE, echo = TRUE}
+install.packages('tidyverse)
+```
+
+## {data-background="tidyverseLogo.png"}
+
+
+## The Basics
+
+Everything in R is an object.
+
+You must create an object and you can then call on the object.
+
+- Always be sure to name objects something other than function names!
+
+```{r , eval = FALSE, echo = TRUE}
+### <b>
+numList = 1:5
+###</b>
+numList
+```
+
+
+## dplyr
+
+The <span class="pack">dplyr</span> package was created to make data manipulation easier.
+
+
+## From this...
+
+```{r baseRexample1, eval=FALSE, echo = TRUE}
+# two step with grep (searching with regular expressions)
+
+newData = oldData[oldData$Z == 'Yes' & oldData$Q == 'No', ]
+
+cols = c('ID', paste0('X', 1:10), 'var1', 'var2', 
+         grep("^Merc[0-9]+", colnames(oldData), value = TRUE))
+
+newData = newData[, cols]
+
+newData = tail(newData, 50)
+
+newData = sort(newData, decreasing = TRUE)
+
+```
+
+## To this...
+
+```{r, eval = FALSE, echo = TRUE}
+newData = oldData %>% 
+  filter(Z == 'Yes', Q == 'No') %>% 
+  select(num_range('X', 1:10), contains('var'), starts_with('Merc')) %>% 
+  tail(50) %>% 
+  arrange(desc(var1))
+```
+
+
+
+## Select
+
+starts_with
+
+ends_with
+
+contains
+
+matches
+
+## Filter
+
+## Mutate
+
+## Coalesce
+
+## Group_by
+
+## Distinct
+
+## Summarize
+
+
+
+
+
+
+
+
+
+## A Quick Word on %>%
+
+In the previous snippet, you hopefully noticed the <span class="func">\%\>\%</span>.
+
+It is included in <span class="pack">dplyr</span>, but it originates in <span class="pack">magrittr</span>.
+
+It is pronounced as <span class="emph">pipe</span> and is functionally equivalent to the Unix <span class="func">\|</span>
+
+  - Check out <span class="pack">magrittr</span> for other pipes.
+
+
+## Why?
+
+Old-school R:
+
+```{r, echo = TRUE, eval = FALSE}
+
+ceiling(mean(abs(sample(-100:100, 50))))
+
+```
+
+Piping:
+
+```{r, echo = TRUE, eval = FALSE}
+
+-100:100 %>% 
+  sample(50) %>% 
+  abs %>% 
+  mean %>% 
+  ceiling
+
+```
+
+
+Both are valid, but one is just a bit easier for human eyes and easier to code.
+
+## Just Scratching The Surface
+
+We have only really seen the tip of the iceberg with regard to what R has to offer.
+
+- We did not even talk about all its analytical capabilities -- just know that it does anything!
+
+
+```{r, eval = FALSE, echo = FALSE}
+fortunes::fortune(which = 323)
+```
+
+
+
+## An Example
+
+```{r, eval = FALSE, echo = c(-1)}
+load("N:/R/conflictData/data/uppsalaConflictData.RData")
+library(dygraphs); library(tidyr)
+as.data.frame(groupTotals) %>%
+  select(year, perp, tot) %>%
+  group_by(year, perp) %>%
+  summarize(tot = sum(tot)) %>%
+  arrange(year) %>%
+  spread(perp, tot) %>%
+  dygraph() %>%
+  dyLegend(show = "onmouseover") %>%
+  dyHighlight(highlightSeriesBackgroundAlpha = .2,
+              hideOnMouseOut = FALSE) %>%
+  dyCSS("N:/R/conflictData/dygraphLegend.css")
+```
+
+
+## An Example {.flexbox .vcenter}
+
+```{r, echo = FALSE, eval = FALSE, warning=FALSE}
+load("conflictDat.RData")
+library(dygraphs); library(tidyr)
+as.data.frame(groupTotals) %>%
+  select(year, perp, tot) %>%
+  group_by(year, perp) %>%
+  summarize(tot = sum(tot)) %>%
+  arrange(year) %>%
+  spread(perp, tot) %>%
+  dygraph() %>%
+  dyLegend(show = "onmouseover") %>%
+  dyHighlight(highlightSeriesBackgroundAlpha = .2,
+              hideOnMouseOut = FALSE) %>%
+  dyCSS("dygraphLegend.css")
+```
+
+
+## Another Example (Because They Are Fun!)
+
+```{r, warning = FALSE, message = FALSE, echo = TRUE, eval = FALSE}
+library(plotly)
+
+plot_ly(economics, x = date, y = uempmed) %>%
+  add_trace(y = fitted(loess(uempmed ~ as.numeric(date))), x = date) %>%
+  layout(title = "Median duration of unemployment (in weeks)",
+         showlegend = FALSE) %>%
+  dplyr::filter(uempmed == max(uempmed)) %>%
+  layout(annotations = list(x = date, y = uempmed, text = "Peak", showarrow = T))
+```
+
+
+## Another Example (Because They Are Fun!)
+
+```{r, warning = FALSE, message = FALSE, echo = FALSE, eval = FALSE}
+library(plotly)
+
+plot_ly(economics, x = date, y = uempmed) %>%
+  add_trace(y = fitted(loess(uempmed ~ as.numeric(date))), x = date) %>%
+  layout(title = "Median duration of unemployment (in weeks)",
+         showlegend = FALSE) %>%
+  dplyr::filter(uempmed == max(uempmed)) %>%
+  layout(annotations = list(x = date, y = uempmed, text = "Peak", showarrow = T))
+```
+
+
+## Last One...
+
+```{r, warning = FALSE, message = FALSE, echo = TRUE, eval = FALSE}
+library(ggplot2)
+
+p = ggplot(mtcars, aes(x = wt, y = mpg)) +
+  geom_point(aes(text = paste("Transmission:", as.factor(am))), size = 2) +
+  geom_smooth(aes(colour = as.ordered(cyl), fill = as.ordered(cyl)), 
+              show.legend = FALSE) + 
+  facet_grid(. ~ cyl) +
+  scale_color_brewer(palette = "Dark2") +
+  scale_fill_brewer(palette = "Dark2") +
+  #scale_colour_discrete(name = "Cylinders") +
+  lazerhawk::theme_trueMinimal()
+
+ggplotly(p)
+```
+
+
+
+## Last One...
+
+```{r, warning = FALSE, message = FALSE, echo = FALSE, eval = FALSE}
+p = ggplot(mtcars, aes(x = wt, y = mpg)) +
+  geom_point(aes(text = paste("Transmission:", as.factor(am))), size = 2) +
+  geom_smooth(aes(colour = as.ordered(cyl), fill = as.ordered(cyl)), show.legend = FALSE) + 
+  facet_grid(. ~ cyl) +
+  scale_color_brewer(palette = "Dark2") +
+  scale_fill_brewer(palette = "Dark2") +
+  #scale_colour_discrete(name = "Cylinders") +
+  lazerhawk::theme_trueMinimal()
+
+ggplotly(p)
+```
+
+
+
+## Interactive Tables
+
+```{r, echo = 3, eval = FALSE}
+mtcars1 = mtcars
+mtcars1$am = factor(mtcars1$am, levels = 0:1)
+DT::datatable(head(mtcars1), filter = "top")
+```
+
+
+
+
+# Wrap
+
+## Wrapping It Up
+
+Although our time was brief, I hope you can see the benefits of using R/RStudio for your research.
+
+R only continues to develop, improve, and grow!
+
+By using R, you will also find growth!
+
+  - Maybe not happiness, but definitely growth.
+  
+```{r, eval = FALSE, echo = FALSE}
+fortunes::fortune(which = 83)
+```
+
+
