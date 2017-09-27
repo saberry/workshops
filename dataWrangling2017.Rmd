@@ -137,18 +137,55 @@ newData = oldData %>%
 ```
 
 
+## A Quick Word on %>%
+
+In the previous snippet, you hopefully noticed the <span class="func">\%\>\%</span>.
+
+It is included in <span class="pack">dplyr</span>, but it originates in <span class="pack">magrittr</span>.
+
+It is pronounced as <span class="emph">pipe</span> and is functionally equivalent to the Unix <span class="func">\|</span>
+
+  - Check out <span class="pack">magrittr</span> for other pipes.
+
+
+## Why?
+
+Old-school R:
+
+```{r, echo = TRUE, eval = FALSE}
+
+ceiling(mean(abs(sample(-100:100, 50))))
+
+```
+
+Piping:
+
+```{r, echo = TRUE, eval = FALSE}
+
+-100:100 %>% 
+  sample(50) %>% 
+  abs %>% 
+  mean %>% 
+  ceiling
+
+```
+
+
+Both are valid, but one is just a bit easier for human eyes and easier to code.
+
+
 ## Our Data
 
 <a href="https://en.wikipedia.org/wiki/List_of_highest-grossing_films">Highest Grossing Films</a>
 
 ```{r}
-library(rvest); library(xml2)
+library(rvest); library(xml2); library(magrittr)
 
 allTables = read_html("https://en.wikipedia.org/wiki/List_of_highest-grossing_films") %>% 
   html_table(fill = TRUE)
 
 highestGrossing = allTables %>% 
-  magrittr::extract2(1)
+  extract2(1)
 
 head(highestGrossing)
 ```
@@ -223,7 +260,7 @@ highestGrossing = highestGrossing %>%
 
 Our dollar values are nominal, but I think we should add a real dollar column.
 
-First, we will get a GDP deflator table
+First, we will get a GDP deflator table and value:
 
 ```{r}
 gdpDeflator2017 = read_html("http://www.multpl.com/gdp-deflator/table") %>% 
@@ -249,7 +286,54 @@ highestGrossing = highestGrossing %>%
 
 ## Group_by
 
+```{r}
+highestGrossing = highestGrossing %>% 
+  group_by(Year)
+```
+
 ## Summarize
+
+```{r}
+highestGrossingSummary = highestGrossing %>% 
+  summarize(n = n(), 
+            meanGross = mean(grossReal2017))
+
+highestGrossingSummary
+```
+
+## Visual Explorations
+
+```{r}
+library(ggplot2)
+
+ggplot(highestGrossingSummary, aes(Year, meanGross, size = n)) +
+  geom_point() +
+  theme_minimal()
+```
+
+
+## A Little More Modern
+
+```{r}
+movieByYear = highestGrossing %>% 
+  group_by(Year) %>%
+  dplyr::summarise(movies = paste(Title, collapse = ", ")) %>% 
+  right_join(., highestGrossingSummary, by = "Year")
+```
+
+
+```{r}
+library(plotly)
+
+p = ggplot(movieByYear, aes(Year, meanGross, size = n)) +
+  geom_point(aes(text = movies)) +
+  theme_minimal()
+
+ggplotly(p, tooltip = c("text"))
+
+```
+
+# Other Cool dplyr Functions
 
 ## Coalesce
 
@@ -277,41 +361,6 @@ testDF %>%
 
 
 
-## A Quick Word on %>%
-
-In the previous snippet, you hopefully noticed the <span class="func">\%\>\%</span>.
-
-It is included in <span class="pack">dplyr</span>, but it originates in <span class="pack">magrittr</span>.
-
-It is pronounced as <span class="emph">pipe</span> and is functionally equivalent to the Unix <span class="func">\|</span>
-
-  - Check out <span class="pack">magrittr</span> for other pipes.
-
-
-## Why?
-
-Old-school R:
-
-```{r, echo = TRUE, eval = FALSE}
-
-ceiling(mean(abs(sample(-100:100, 50))))
-
-```
-
-Piping:
-
-```{r, echo = TRUE, eval = FALSE}
-
--100:100 %>% 
-  sample(50) %>% 
-  abs %>% 
-  mean %>% 
-  ceiling
-
-```
-
-
-Both are valid, but one is just a bit easier for human eyes and easier to code.
 
 ## Just Scratching The Surface
 
