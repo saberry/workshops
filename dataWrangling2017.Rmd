@@ -11,7 +11,7 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
+knitr::opts_chunk$set(echo = TRUE, eval = FALSE, message = FALSE, warning = FALSE, error = FALSE)
 library(dplyr)
 
 ```
@@ -47,7 +47,7 @@ A common question is, "Can R *insert something trivial*?".
 ## Installing packages
 
 ```{r install, eval = FALSE, echo = TRUE}
-install.packages('tidyverse')
+install.packages(c('tidyverse', 'plotly', 'DT', 'data.table'))
 ```
 
 ## The Basics
@@ -178,10 +178,12 @@ Both are valid, but one is just a bit easier for human eyes and easier to code.
 
 <a href="https://en.wikipedia.org/wiki/List_of_highest-grossing_films">Highest Grossing Films</a>
 
-```{r}
+```{r, eval = TRUE}
 library(rvest); library(xml2); library(magrittr)
 
-allTables = read_html("https://en.wikipedia.org/wiki/List_of_highest-grossing_films") %>% 
+filmLink = "https://en.wikipedia.org/wiki/List_of_highest-grossing_films"
+
+allTables = read_html(filmLink) %>% 
   html_table(fill = TRUE)
 
 highestGrossing = allTables %>% 
@@ -214,17 +216,28 @@ The <span class="func">select</span> function does exactly what it says: it sele
 
 It also has some handy helpers for our convenience:
 
-starts_with
+<span class="neonBlue">starts_with</span>
 
-ends_with
+<span class="neonBlue">ends_with</span>
 
-contains
+<span class="neonBlue">contains</span>
 
-matches
+<span class="neonBlue">matches</span>
+
+
+## A Little Game...
+
+Which do you find easier?
+
+> data %>% select(starts_with("var"))
+
+
+> data[, grep("^var", names(data))]
+
 
 ## Action!
 
-```{r}
+```{r, eval = TRUE}
 highestGrossing = highestGrossing %>% 
   select(-Rank, -`Reference(s)`)
 
@@ -235,7 +248,7 @@ head(highestGrossing)
 
 Strings happen...
 
-```{r}
+```{r, eval = TRUE}
 library(stringr)
 
 highestGrossing = highestGrossing %>% 
@@ -248,7 +261,7 @@ highestGrossing = highestGrossing %>%
 
 ## Filter
 
-```{r}
+```{r, eval = TRUE}
 highestGrossing = highestGrossing %>% 
   filter(Peak != 1 & Peak != max(Peak))
 ```
@@ -260,9 +273,11 @@ highestGrossing = highestGrossing %>%
 
 Our dollar values are nominal, but I think we should add a real dollar column.
 
-First, we will get a GDP deflator table and value:
+First, we will get a GDP deflator table and value.
 
-```{r}
+To the web!
+
+```{r, eval = TRUE}
 gdpDeflator2017 = read_html("http://www.multpl.com/gdp-deflator/table") %>% 
   html_table(trim = TRUE, header = TRUE) %>% 
   extract2(1) %>% 
@@ -271,7 +286,7 @@ gdpDeflator2017 = read_html("http://www.multpl.com/gdp-deflator/table") %>%
   extract2(1)
 ```
 
-```{r}
+```{r, eval = TRUE}
 gdpDeflator2017
 ```
 
@@ -279,31 +294,60 @@ gdpDeflator2017
 
 Coherent grammar, huh? Would someone like to explain why <span class="func">mutate</span>?
 
-```{r}
+```{r, eval = TRUE}
 highestGrossing = highestGrossing %>% 
   mutate(grossReal2017 = gross/(gdpDeflator2017/100))
 ```
 
 ## Group_by
 
-```{r}
+```{r, eval = TRUE}
 highestGrossing = highestGrossing %>% 
   group_by(Year)
 ```
 
 ## Summarize
 
-```{r}
+```{r, eval = TRUE}
 highestGrossingSummary = highestGrossing %>% 
   summarize(n = n(), 
             meanGross = mean(grossReal2017))
 
-highestGrossingSummary
+head(highestGrossingSummary)
 ```
+
+## Coding How We Think
+
+```{r, eval = FALSE}
+allTables = read_html(filmLink) %>% 
+  html_table(fill = TRUE) %>% 
+  extract2(1) %>% 
+  select(-Rank, -`Reference(s)`) %>% 
+  mutate(Peak = str_replace(Peak, "[A-Z].*", ""), 
+         Peak = as.numeric(Peak), 
+         gross = as.numeric(str_replace_all(`Worldwide gross`, "\\$|,", ""))) %>% 
+  select(-`Worldwide gross`) %>% 
+  filter(Peak != 1 & Peak != max(Peak)) %>% 
+  mutate(grossReal2017 = gross/(gdpDeflator2017/100)) %>% 
+  group_by(Year) %>% 
+  summarize(n = n(), 
+            meanGross = mean(grossReal2017))
+```
+
 
 ## Visual Explorations
 
-```{r}
+```{r, eval = FALSE}
+library(ggplot2)
+
+ggplot(highestGrossingSummary, aes(Year, meanGross, size = n)) +
+  geom_point() +
+  theme_minimal()
+```
+
+##
+
+```{r, eval = TRUE, echo = FALSE}
 library(ggplot2)
 
 ggplot(highestGrossingSummary, aes(Year, meanGross, size = n)) +
@@ -312,188 +356,90 @@ ggplot(highestGrossingSummary, aes(Year, meanGross, size = n)) +
 ```
 
 
-## A Little More Modern
+## Something A Bit More Modern
 
-```{r}
+```{r, eval = TRUE}
 movieByYear = highestGrossing %>% 
   group_by(Year) %>%
-  dplyr::summarise(movies = paste(Title, collapse = ", ")) %>% 
+  dplyr::summarise(movies = paste(Title, collapse = "\n")) %>% 
   right_join(., highestGrossingSummary, by = "Year")
 ```
 
 
-```{r}
+```{r, eval = FALSE}
 library(plotly)
 
-p = ggplot(movieByYear, aes(Year, meanGross, size = n)) +
+p = ggplot(movieByYear, aes(Year, meanGross, size = n, color = meanGross)) +
   geom_point(aes(text = movies)) +
-  theme_minimal()
+  theme_minimal() +
+  theme(axis.text.y=element_blank(),
+          axis.title.y=element_blank())
 
 ggplotly(p, tooltip = c("text"))
 
 ```
 
-# Other Cool dplyr Functions
+##
 
-## Coalesce
+```{r, eval = TRUE, echo = FALSE}
+library(plotly)
 
-```{r}
-testDF = data.frame(x = c(1:5, rep(NA, 5)), 
-                    y = c(rep(NA, 5), 6:10))
+p = ggplot(movieByYear, aes(Year, meanGross)) +
+  geom_point(aes(text = movies, size = n, color = meanGross)) +
+  theme_minimal() +
+  theme(axis.text.y=element_blank(),
+          axis.title.y=element_blank())
 
-testDF %>% 
-  mutate(z = coalesce(x, y))
+ggplotly(p, tooltip = c("text", "size", "color"))
+
 ```
 
 
+## Other Cool dplyr Functions
+
+## Coalesce
+
+Qualtrics data (among others), sometimes returns odd data arrangements:
+
+```{r, eval = TRUE}
+testDF = data.frame(x1 = c(1:5, rep(NA, 5)), 
+                    x2 = c(rep(NA, 5), 6:10))
+
+testDF
+
+testDF %>% 
+  mutate(z = coalesce(x1, x2))
+```
 
 
 
 ## Distinct
 
+We typically need to do something like the following to "de-dupe" our data:
 
-
-
-
-
-
-
-
+```{r}
+data[!duplicated(data), ]
+```
 
 
 
 ## Just Scratching The Surface
 
-We have only really seen the tip of the iceberg with regard to what R has to offer.
+We have only really seen the tip of the iceberg with regard to what the tidyverse has to offer.
 
-- We did not even talk about all its analytical capabilities -- just know that it does anything!
+We could spend hours on the tidyverse, data.table, base, etc.
 
 
-```{r, eval = FALSE, echo = FALSE}
+```{r, eval = TRUE, echo = FALSE}
 fortunes::fortune(which = 323)
 ```
-
-
-
-## An Example
-
-```{r, eval = FALSE, echo = c(-1)}
-load("N:/R/conflictData/data/uppsalaConflictData.RData")
-library(dygraphs); library(tidyr)
-as.data.frame(groupTotals) %>%
-  select(year, perp, tot) %>%
-  group_by(year, perp) %>%
-  summarize(tot = sum(tot)) %>%
-  arrange(year) %>%
-  spread(perp, tot) %>%
-  dygraph() %>%
-  dyLegend(show = "onmouseover") %>%
-  dyHighlight(highlightSeriesBackgroundAlpha = .2,
-              hideOnMouseOut = FALSE) %>%
-  dyCSS("N:/R/conflictData/dygraphLegend.css")
-```
-
-
-## An Example {.flexbox .vcenter}
-
-```{r, echo = FALSE, eval = FALSE, warning=FALSE}
-load("conflictDat.RData")
-library(dygraphs); library(tidyr)
-as.data.frame(groupTotals) %>%
-  select(year, perp, tot) %>%
-  group_by(year, perp) %>%
-  summarize(tot = sum(tot)) %>%
-  arrange(year) %>%
-  spread(perp, tot) %>%
-  dygraph() %>%
-  dyLegend(show = "onmouseover") %>%
-  dyHighlight(highlightSeriesBackgroundAlpha = .2,
-              hideOnMouseOut = FALSE) %>%
-  dyCSS("dygraphLegend.css")
-```
-
-
-## Another Example (Because They Are Fun!)
-
-```{r, warning = FALSE, message = FALSE, echo = TRUE, eval = FALSE}
-library(plotly)
-
-plot_ly(economics, x = date, y = uempmed) %>%
-  add_trace(y = fitted(loess(uempmed ~ as.numeric(date))), x = date) %>%
-  layout(title = "Median duration of unemployment (in weeks)",
-         showlegend = FALSE) %>%
-  dplyr::filter(uempmed == max(uempmed)) %>%
-  layout(annotations = list(x = date, y = uempmed, text = "Peak", showarrow = T))
-```
-
-
-## Another Example (Because They Are Fun!)
-
-```{r, warning = FALSE, message = FALSE, echo = FALSE, eval = FALSE}
-library(plotly)
-
-plot_ly(economics, x = date, y = uempmed) %>%
-  add_trace(y = fitted(loess(uempmed ~ as.numeric(date))), x = date) %>%
-  layout(title = "Median duration of unemployment (in weeks)",
-         showlegend = FALSE) %>%
-  dplyr::filter(uempmed == max(uempmed)) %>%
-  layout(annotations = list(x = date, y = uempmed, text = "Peak", showarrow = T))
-```
-
-
-## Last One...
-
-```{r, warning = FALSE, message = FALSE, echo = TRUE, eval = FALSE}
-library(ggplot2)
-
-p = ggplot(mtcars, aes(x = wt, y = mpg)) +
-  geom_point(aes(text = paste("Transmission:", as.factor(am))), size = 2) +
-  geom_smooth(aes(colour = as.ordered(cyl), fill = as.ordered(cyl)), 
-              show.legend = FALSE) + 
-  facet_grid(. ~ cyl) +
-  scale_color_brewer(palette = "Dark2") +
-  scale_fill_brewer(palette = "Dark2") +
-  #scale_colour_discrete(name = "Cylinders") +
-  lazerhawk::theme_trueMinimal()
-
-ggplotly(p)
-```
-
-
-
-## Last One...
-
-```{r, warning = FALSE, message = FALSE, echo = FALSE, eval = FALSE}
-p = ggplot(mtcars, aes(x = wt, y = mpg)) +
-  geom_point(aes(text = paste("Transmission:", as.factor(am))), size = 2) +
-  geom_smooth(aes(colour = as.ordered(cyl), fill = as.ordered(cyl)), show.legend = FALSE) + 
-  facet_grid(. ~ cyl) +
-  scale_color_brewer(palette = "Dark2") +
-  scale_fill_brewer(palette = "Dark2") +
-  #scale_colour_discrete(name = "Cylinders") +
-  lazerhawk::theme_trueMinimal()
-
-ggplotly(p)
-```
-
-
-
-## Interactive Tables
-
-```{r, echo = 3, eval = FALSE}
-mtcars1 = mtcars
-mtcars1$am = factor(mtcars1$am, levels = 0:1)
-DT::datatable(head(mtcars1), filter = "top")
-```
-
-
 
 
 # Wrap
 
 ## Wrapping It Up
 
-Although our time was brief, I hope you can see the benefits of using R/RStudio for your research.
+Although our time was brief, I hope you can see the benefits of using R/RStudio and dplyr for your research.
 
 R only continues to develop, improve, and grow!
 
@@ -501,7 +447,7 @@ By using R, you will also find growth!
 
   - Maybe not happiness, but definitely growth.
   
-```{r, eval = FALSE, echo = FALSE}
+```{r, eval = TRUE, echo = FALSE}
 fortunes::fortune(which = 83)
 ```
 
