@@ -1,5 +1,5 @@
 ---
-title: "Data Wrangling: R Style"
+title: "Data Wrangling, R Style"
 output:
   revealjs::revealjs_presentation:
     theme: night
