@@ -1,39 +1,46 @@
+---
+title: "Data Wrangling Demos"
+output: html_document
+---
+
+```{r, include=FALSE}
+tutorial::go_interactive()
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
+```
+
 #####################
 ### Workshop Code ###
 #####################
 
-### R Install ###
-# Not in the presentation, but might be handy for you.
-# R: https://cloud.r-project.org/
-# RStudio: https://www.rstudio.com/products/rstudio/download/#download
-
-# Briefly, you can do everything you would ever need with R alone.
-# RStudio is an IDE that makes working with R easier. You get a
-# scripting environment, package manager, viewers, etc. While I
-# might not have earned it, please just trust me that it will make
-# learning R much easier. I learned it the old-school way and have
-# the brain damage to show for it.
-
 ### Package Installation ###
 
 # The easiest way to run a line of code is to put your cursor
-# anywhere on the line and press Control + Enter. If we have a
-# piped chunk (this will become clear later), then you can put
-# your cursor anywhere on the chunk and run it. There is almost
-# never a need to highlight everything to run it.
+# anywhere on the line and press Control + Enter.
 
+
+```{r}
 install.packages(c('tidyverse', 'plotly', 'DT', 'data.table'))
+```
 
 # You will only ever need to run the previous line once (unless you update R).
 
 ### The Basics ###
 
+
+```{r}
 numList = 1:5
 
 numList
 
+```
+
+
 ### The Functions ###
 
+```{r}
 nonsenseFunction = function(x) {
   res = (sqrt(x) + sin(x))^2
   return(res)
@@ -43,16 +50,25 @@ test = 1:10
 
 nonsenseFunction(test)
 
+```
+
+
+
 # Just to show you, we could also do something like the following:
 
+```{r}
 nonsenseFunction(1:10)
+```
 
-# We did not create an object, but just passed a vector into
+
+
+
+# We did not create an object, but just passed a vector into 
 # our function. We can compound things like this:
 
 nonSenseOutput = nonsenseFunction(test)
 
-# So, we have created a new object using our test object and our function!
+# So, we have created a new object 
 
 ### Our Data ###
 
@@ -69,9 +85,6 @@ highestGrossing = allTables %>%
 head(highestGrossing)
 
 # You may want to see all of your data -- use View(highestGrossing)
-# This is an important note to make: R is case sensitive.
-# Be honest -- you typed View() with a lowercase "v", right?
-# If you didn't make that mistake, then pat yourself on the back.
 
 ### Action! (Or using select) ###
 
@@ -144,7 +157,7 @@ allTables = read_html(filmLink) %>%
 # you, but so is Bill "The Wizard" Venables.
 # If you have made it here, without tears,
 # speak now (yes, right now -- I am probably
-# not saying anything too important) to
+# not saying anything that important) to
 # get your pick of R t-shirts. Be fast, though,
 # because it will only go to one person.
 
@@ -162,15 +175,10 @@ ggplot(highestGrossingSummary, aes(Year, meanGross, size = n)) +
   geom_point() +
   theme_minimal()
 
-# If this is your first exposure to ggplot2, then it
-# might seem daunting -- just know that it isn't.
-# You can do things with ggplot2 that you never thought
-# possible. With regard to a typical plot, I went pretty
-# sparse here, but do know that the sky is the limit and
-# we can build layers upon layer.
-
 ### Something A Bit More Modern ###
 
+
+```{r}
 movieByYear = highestGrossing %>%
   group_by(Year) %>%
   dplyr::summarise(movies = paste(Title, collapse = "\n")) %>%
@@ -186,8 +194,13 @@ p = ggplot(movieByYear, aes(Year, meanGross, size = n, color = meanGross)) +
 
 ggplotly(p, tooltip = c("text", "size", "color"))
 
+```
+
+
+
 ### Coalesce ###
 
+```{r}
 testDF = data.frame(x1 = c(1:5, rep(NA, 5)),
                     x2 = c(rep(NA, 5), 6:10))
 
@@ -195,10 +208,12 @@ testDF
 
 testDF %>%
   mutate(z = coalesce(x1, x2))
+```
+
+
 
 # The first person to yell their favorite
 # dplyr function gets to pick the next shirt.
 # If you start a slow-clap/chant, I will throw
-# in a pick from the candy bag; I see no reason
-# why I should be the only person looking foolish.
-
+# in a pick from the candy bag; someone should
+# join me in looking foolish.
