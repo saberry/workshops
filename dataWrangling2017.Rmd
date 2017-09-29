@@ -17,6 +17,19 @@ library(dplyr)
 ```
 
 
+## First Things...
+
+1.  Navigate to here: 
+
+2.  Open the text file.
+
+3.  Copy the contents into an R file.
+
+This, of course, is optional.
+
+
+## {data-background-image="https://i.imgur.com/kT3hGLt.gif"} 
+
 ## R
 
 R is more than just a "stats package".
@@ -86,7 +99,7 @@ nonsenseFunction(test)
 Now that you know we are just dealing with objects and functions, you are 90% of the way to R enlightenment.
 
 
-## {data-background="tidyverseLogo.png"}
+## {data-background-image="tidyverseLogo.png"}
 
 
 ## The tidyverse
@@ -126,6 +139,8 @@ newData = sort(newData, decreasing = TRUE)
 
 ```
 
+## {data-background-image="https://media.giphy.com/media/3oz8xA8mC7lj6X3KOk/giphy.gif"}
+
 ## To this...
 
 ```{r, eval = FALSE, echo = TRUE}
@@ -146,6 +161,8 @@ It is included in <span class="pack">dplyr</span>, but it originates in <span cl
 It is pronounced as <span class="emph">pipe</span> and is functionally equivalent to the Unix <span class="func">\|</span>
 
   - Check out <span class="pack">magrittr</span> for other pipes.
+
+## {data-background-image="http://i.imgur.com/ll7RRQb.gif"}
 
 
 ## Why?
@@ -209,6 +226,7 @@ Summarize
 
 ## Our Destination
 
+Visualization -- but I'm not giving away the punchline yet.
 
 ## Select
 
@@ -234,6 +252,18 @@ Which do you find easier?
 
 > data[, grep("^var", names(data))]
 
+## Take A Guess
+
+```{r, eval = FALSE}
+data[, grep("var$", names(data))]
+```
+
+## 
+
+```{r}
+data %>% select(ends_with("var"))
+```
+
 
 ## Action!
 
@@ -256,6 +286,8 @@ highestGrossing = highestGrossing %>%
          Peak = as.numeric(Peak), 
          gross = as.numeric(str_replace_all(`Worldwide gross`, "\\$|,", ""))) %>% 
   select(-`Worldwide gross`)
+
+head(highestGrossing)
 ```
 
 
@@ -335,6 +367,15 @@ allTables = read_html(filmLink) %>%
 ```
 
 
+## An Interactive Look
+
+```{r, eval = TRUE}
+library(DT)
+
+datatable(highestGrossingSummary, style = "bootstrap")
+```
+
+
 ## Visual Explorations
 
 ```{r, eval = FALSE}
@@ -375,7 +416,7 @@ p = ggplot(movieByYear, aes(Year, meanGross, size = n, color = meanGross)) +
   theme(axis.text.y=element_blank(),
           axis.title.y=element_blank())
 
-ggplotly(p, tooltip = c("text"))
+ggplotly(p, tooltip = c("text", "size", "color"))
 
 ```
 
@@ -406,7 +447,12 @@ testDF = data.frame(x1 = c(1:5, rep(NA, 5)),
                     x2 = c(rep(NA, 5), 6:10))
 
 testDF
+```
 
+
+## What Does It Do?
+
+```{r}
 testDF %>% 
   mutate(z = coalesce(x1, x2))
 ```
@@ -421,13 +467,18 @@ We typically need to do something like the following to "de-dupe" our data:
 data[!duplicated(data), ]
 ```
 
+## Easier
+
+```{r}
+distinct(data)
+```
 
 
 ## Just Scratching The Surface
 
 We have only really seen the tip of the iceberg with regard to what the tidyverse has to offer.
 
-We could spend hours on the tidyverse, data.table, base, etc.
+- We could spend days on the tidyverse, data.table, base, etc.
 
 
 ```{r, eval = TRUE, echo = FALSE}
@@ -452,3 +503,10 @@ fortunes::fortune(which = 83)
 ```
 
 
+## Upcoming Workshops
+
+Python (or...breakfast with George)
+
+Regular Expressions
+
+##  {data-background-image="https://i.imgur.com/lNUh0uV.gif"}
