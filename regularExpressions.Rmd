@@ -1,0 +1,155 @@
+---
+title: |  
+  | Regular Expressions
+  | String Magic
+output:
+  revealjs::revealjs_presentation:
+    theme: night
+    highlight: zenburn
+    center: true
+    transition: fade
+    css: clean.css
+    slide_level: 2
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE, error = FALSE)
+library(dplyr)
+
+```
+
+## Why Am I Here?
+
+To learn magic -- mostly!
+
+In reality, regular expressions (regex) can make you much more efficient.
+
+
+## When To Use Regex
+
+### Not Just For Research
+
+String parsing and cleaning
+
+String replacement (large scale)
+
+## How To Use Regex
+
+Fortunately, we get to learn a new *language*.
+
+- It is more akin to a series of symbols with definite meanings.
+
+## Common Characters
+
+```{r}
+commonRegex = data.frame(regex = c("[a-zA-z]", "[0-9]", "+", "^", "$"), 
+                         use = c("Any letter", "Any number", "One or more", 
+                                 "Start of string", "End of string"))
+
+knitr::kable(commonRegex)
+```
+
+## Meta Characters
+
+Some symbols mean certain things in regex.
+
+```{r}
+reservedChars = data.frame(meta = c('\\\\', "^", "$", 
+                                       "{}", "[]", "()", 
+                                       ".", "*", "+", "?", 
+                                       "|", "<>", "-"), 
+                           meaning = c("escape", "start", "end", "quantifier", 
+                                       "one of contents", "capturing group", 
+                                       "wildcard", "greedy zero or more", 
+                                       "greedy one or more", "lazy quantifier", 
+                                       "or", "start/end of word", "range"))
+
+knitr::kable(reservedChars)
+```
+
+
+
+## A Simple Example
+
+We have the following list of numbers:
+
+```{r}
+numList = c("618 549 5326", 
+            "(618) 549-5326", 
+            "618.549.5326", 
+            "618-549-5326", 
+            "6185495326", 
+            "123654", 
+            "357-84-5915")
+
+numList
+```
+
+
+Quatros Deep Pan Pizza
+
+## Getting The Phone Numbers
+
+```{r, results='markup'}
+cat("^\\(*\\d{3}\\)*( |-|.)*\\d{3}( |-|.)*\\d{4}$")
+```
+
+
+```{r}
+grep("^\\(*\\d{3}\\)*( |-|.)*\\d{3}( |-|.)*\\d{4}$", numList, value = TRUE)
+```
+
+
+## Where To Use Regex
+
+Any decent programming language:
+
+- JavaScript
+- Python
+- R
+
+You can even use them in SAS and Stata.
+
+## Less Obvious
+
+### And Easier Than You Think
+
+Google Docs
+
+Notepad++ 
+
+- Find in Files
+
+Command line
+
+Powershell
+
+## Find in Files
+
+The *Find in Files* utility in Notepad++ can save you (or RAs) hours/days.
+
+## {data-background-image="https://media.giphy.com/media/11xjcvOMD4HYFq/giphy.gif"} 
+
+## Imagine If You Will...
+
+A world where many documents (text, data, etc.) have problems.
+
+Little imagination required!
+
+
+
+## Infinite Complexity...
+
+### Infinite Possibility
+
+Logic
+
+Boundaries
+
+POSIX Classes
+
+Lookarounds
+
+## How To Learn
+
+## As Above, So Below
