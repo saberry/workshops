@@ -20,24 +20,24 @@ library(dplyr)
 
 ## Why Am I Here?
 
-To learn magic -- mostly!
+Breakfast and magic!
 
-In reality, regular expressions (regex) can make you much more efficient.
+Regular expressions (regex) can make you much more efficient.
 
 
 ## When To Use Regex
-
-### Not Just For Research
 
 String parsing and cleaning
 
 String replacement (large scale)
 
+You will never need to make changes manually again
+
+### Not Just For Research
+
 ## How To Use Regex
 
-Fortunately, we get to learn a new *language*.
-
-- It is more akin to a series of symbols with definite meanings.
+It is like learning hieroglyphics, but much more useful.
 
 ## Common Characters
 
@@ -55,7 +55,7 @@ Some symbols mean certain things in regex.
 
 ```{r}
 reservedChars = data.frame(meta = c('\\\\', "^", "$", 
-                                       "{}", "[]", "()", 
+                                       "{}", "\\[\\]", "()", 
                                        ".", "*", "+", "?", 
                                        "|", "<>", "-"), 
                            meaning = c("escape", "start", "end", "quantifier", 
@@ -118,25 +118,33 @@ Google Docs
 
 Notepad++ 
 
-- Find in Files
+Find in Files
+
+Qualtrics
 
 Command line
 
 Powershell
 
-## Find in Files
-
-The *Find in Files* utility in Notepad++ can save you (or RAs) hours/days.
-
-## {data-background-image="https://media.giphy.com/media/11xjcvOMD4HYFq/giphy.gif"} 
-
 ## Imagine If You Will...
 
 A world where many documents (text, data, etc.) have problems.
 
-Little imagination required!
+- Little imagination required!
 
+Without regular expressions, how would you solve this problem?
 
+## {data-background-image="https://media.giphy.com/media/11xjcvOMD4HYFq/giphy.gif"}
+
+## Find in Files
+
+The *Find in Files* utility in Notepad++ can save you (or RAs) hours/days.
+
+## 
+
+We can see that just a little bit of regex can take us a long way.
+
+Just as text can be elaborate, so can regular expressions.
 
 ## Infinite Complexity...
 
@@ -152,4 +160,8 @@ Lookarounds
 
 ## How To Learn
 
+Dieter time!
+
 ## As Above, So Below
+
+Once you start learning regular expressions, they start to come easier and finding patterns becomes almost second nature.
