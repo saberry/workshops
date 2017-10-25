@@ -37,7 +37,9 @@ You will never need to make changes manually again
 
 ## How To Use Regex
 
-It is like learning hieroglyphics, but much more useful.
+It is like learning hieroglyphs, but much more useful.
+
+You are just building patterns.
 
 ## Common Characters
 
@@ -67,6 +69,9 @@ reservedChars = data.frame(meta = c('\\\\', "^", "$",
 knitr::kable(reservedChars)
 ```
 
+They all need to be escaped with a <span class="func">\\</span>
+
+## {data-background-image="https://imgs.xkcd.com/comics/backslashes.png" data-background-size="contain"}
 
 
 ## A Simple Example
@@ -86,7 +91,7 @@ numList
 ```
 
 
-Quatros Deep Pan Pizza
+<a href="https://www.youtube.com/watch?v=AWU2GnPjlp0">Quatro's Deep Pan Pizza</a>
 
 ## Getting The Phone Numbers
 
@@ -97,6 +102,26 @@ cat("^\\(*\\d{3}\\)*( |-|.)*\\d{3}( |-|.)*\\d{4}$")
 
 ```{r}
 grep("^\\(*\\d{3}\\)*( |-|.)*\\d{3}( |-|.)*\\d{4}$", numList, value = TRUE)
+```
+
+
+## Broken Down
+
+<span class="fragment highlight-blue">^\\(\*</span>
+<span class="fragment highlight-red">\\d{3}</span>
+<span class="fragment highlight-blue">\\)\*</span>
+<span class="fragment highlight-green">( |-|.)\*</span>
+<span class="fragment highlight-red">\\d{3}</span>
+<span class="fragment highlight-green">( |-|.)\*</span>
+<span class="fragment highlight-red">\\d{4}$</span>
+
+## Globally Search a Regular Ex
+
+```{r}
+strings = c("", 
+            "", 
+            "", 
+            "")
 ```
 
 
