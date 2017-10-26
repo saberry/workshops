@@ -24,6 +24,8 @@ Breakfast and magic!
 
 Regular expressions (regex) can make you much more efficient.
 
+Regex can also open new doors from an analysis perspective.
+
 
 ## When To Use Regex
 
@@ -41,10 +43,12 @@ It is like learning hieroglyphs, but much more useful.
 
 You are just building patterns.
 
+## {data-background-image="https://media.giphy.com/media/gMAQhQDwxl1fO/giphy.gif" data-background-size="contain"}
+
 ## Common Characters
 
 ```{r}
-commonRegex = data.frame(regex = c("[a-zA-z]", "[0-9]", "+", "^", "$"), 
+commonRegex = data.frame(regex = c("[a-zA-Z]", "[0-9]", "+", "^", "$"), 
                          use = c("Any letter", "Any number", "One or more", 
                                  "Start of string", "End of string"))
 
@@ -96,12 +100,12 @@ numList
 ## Getting The Phone Numbers
 
 ```{r, results='markup'}
-cat("^\\(*\\d{3}\\)*( |-|.)*\\d{3}( |-|.)*\\d{4}$")
+cat("^\\(*\\d{3}\\)*(\\s|-|.)*\\d{3}(\\s|-|.)*\\d{4}$")
 ```
 
 
 ```{r}
-grep("^\\(*\\d{3}\\)*( |-|.)*\\d{3}( |-|.)*\\d{4}$", numList, value = TRUE)
+grep("^\\(*\\d{3}\\)*(\\s|-|.)*\\d{3}(\\s|-|.)*\\d{4}$", numList, value = TRUE)
 ```
 
 
@@ -110,19 +114,66 @@ grep("^\\(*\\d{3}\\)*( |-|.)*\\d{3}( |-|.)*\\d{4}$", numList, value = TRUE)
 <span class="fragment highlight-blue">^\\(\*</span>
 <span class="fragment highlight-red">\\d{3}</span>
 <span class="fragment highlight-blue">\\)\*</span>
-<span class="fragment highlight-green">( |-|.)\*</span>
+<span class="fragment highlight-green">(\\s|-|.)\*</span>
 <span class="fragment highlight-red">\\d{3}</span>
-<span class="fragment highlight-green">( |-|.)\*</span>
+<span class="fragment highlight-green">(\\s|-|.)\*</span>
 <span class="fragment highlight-red">\\d{4}$</span>
 
-## Globally Search a Regular Ex
+## Globally Search a Regular Expression and Print
+
+### Or grep to us regular folks
+
+Using variants of grep let's us find our patterns.
+
+## One Of These Things Is Not Like The Other...
+
+Appropriate spacing
+
+Common mistakes
+
+Common mistakes 
+
+ Common mistakes 
+
+
+## The Problems
+ 
+```{r}
+spacing = c("Appropriate spacing", 
+            "Common mistakes", 
+            "Common mistakes ", 
+            " Common mistakes", 
+            " Common mistakes ", 
+            "  Common mistakes")
+
+spacing
+```
+
+## Isolating The Problems
+
+```{r, results='markup'}
+cat("^(\\s|\\t)+|(\\s|\\t)+$")
+```
 
 ```{r}
-strings = c("", 
-            "", 
-            "", 
-            "")
+grep("^(\\s|\\t)+|(\\s|\\t)+$", spacing, value = TRUE)
 ```
+
+
+## Broken Down
+
+<span class="fragment highlight-blue">^</span>
+<span class="fragment highlight-red">(\\s</span>
+<span class="fragment highlight-green">|</span>
+<span class="fragment highlight-red">\\t)</span>
+<span class="fragment highlight-blue">+</span>
+<span class="fragment highlight-green">|</span>
+<span class="fragment highlight-red">(\\s</span>
+<span class="fragment highlight-green">|</span>
+<span class="fragment highlight-red">\\t)</span>
+<span class="fragment highlight-blue">+</span>
+<span class="fragment highlight-blue">$</span>
+
 
 
 ## Where To Use Regex
@@ -175,13 +226,13 @@ Just as text can be elaborate, so can regular expressions.
 
 ### Infinite Possibility
 
-Logic
+## Logic
 
-Boundaries
+## Boundaries
 
-POSIX Classes
+## POSIX Classes
 
-Lookarounds
+## Lookarounds
 
 ## How To Learn
 
