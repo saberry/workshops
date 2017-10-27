@@ -100,24 +100,24 @@ numList
 ## Getting The Phone Numbers
 
 ```{r, results='markup'}
-cat("^\\(*\\d{3}\\)*(\\s|-|.)*\\d{3}(\\s|-|.)*\\d{4}$")
+cat("^\\(*[0-9]{3}\\)*(\\s|-|.)*[0-9]{3}(\\s|-|.)*[0-9]{4}$")
 ```
 
 
 ```{r}
-grep("^\\(*\\d{3}\\)*(\\s|-|.)*\\d{3}(\\s|-|.)*\\d{4}$", numList, value = TRUE)
+grep("^\\(*[0-9]{3}\\)*(\\s|-|.)*[0-9]{3}(\\s|-|.)*[0-9]{4}$", numList, value = TRUE)
 ```
 
 
 ## Broken Down
 
 <span class="fragment highlight-blue">^\\(\*</span>
-<span class="fragment highlight-red">\\d{3}</span>
+<span class="fragment highlight-red">[0-9]</span>
 <span class="fragment highlight-blue">\\)\*</span>
 <span class="fragment highlight-green">(\\s|-|.)\*</span>
-<span class="fragment highlight-red">\\d{3}</span>
+<span class="fragment highlight-red">[0-9]</span>
 <span class="fragment highlight-green">(\\s|-|.)\*</span>
-<span class="fragment highlight-red">\\d{4}$</span>
+<span class="fragment highlight-red">[0-9]{4}$</span>
 
 ## Globally Search a Regular Expression and Print
 
@@ -194,8 +194,6 @@ Google Docs
 
 Notepad++ 
 
-Find in Files
-
 Qualtrics
 
 Command line
@@ -216,23 +214,142 @@ Without regular expressions, how would you solve this problem?
 
 The *Find in Files* utility in Notepad++ can save you (or RAs) hours/days.
 
-## 
+## Infinite Complexity...
+
+### Infinite Possibility
 
 We can see that just a little bit of regex can take us a long way.
 
 Just as text can be elaborate, so can regular expressions.
 
-## Infinite Complexity...
 
-### Infinite Possibility
+## Characters
 
-## Logic
+We can replace some of the things we learned earlier with shorter characters.
+
+>- \\d == [0-9]
+
+>- \\w == [a-zA-Z]
 
 ## Boundaries
 
+While there are several, word and non-word boundaries are handy.
+
+```{r, results='markup'}
+cat("\\b")
+```
+
+```{r, results='markup'}
+cat("\\B")
+```
+
+
+## Examples
+
+```{r}
+test = c("bob ate the cat quickly", "whatever happened to bobcat goldwaithe", "big bob ate the cat quickly", "bob hates catsup")
+
+test
+```
+
+## Word Boundary
+
+```{r, results='markup'}
+cat("\\bcat\\b")
+```
+
+```{r}
+grep("\\bcat\\b", test, value = TRUE)
+```
+
+
+## Non-word Boundary
+
+```{r, results='markup'}
+cat("\\Bcat|cat\\B")
+```
+
+```{r}
+grep("\\Bcat|cat\\B", test, value = TRUE)
+```
+
+
 ## POSIX Classes
 
+Handy shortcuts for common character sets.
+
+```{r, results='markup'}
+cat("[:alpha:]")
+
+cat("[:digit:]")
+
+cat("[:alnum:]")
+
+cat("[:punct:]")
+
+cat("[:space:]")
+
+cat("[:upper:]")
+
+cat("[:lower:]")
+```
+
+## Easy Reading
+
+The alternative to [:punct:] is "!"\#$%&'()*+,\-./:;<=>?@\[\\\]^_`{|}~"
+
+
 ## Lookarounds
+
+This is where things tend to get a bit wild!
+
+Lookarounds consist of the following:
+
+- positive lookahead
+
+- negative lookahead
+
+- positive lookbehind
+
+- negative lookbehind
+
+## positive lookahead
+
+```{r}
+test = c("I will pay my late fees", 
+         "I am paying my late fees")
+
+grep("(?:pay)ing", test, value = TRUE, perl = TRUE)
+```
+
+
+## negative lookahead
+
+```{r}
+test = c("I will pay my late fees", 
+         "I am paying my late fees")
+
+grep("pay(?!ing)", test, value = TRUE, perl = TRUE)
+```
+
+## positive lookbehind
+
+```{r}
+test = c("I will pay my late fees", 
+         "I am paying my late fees")
+
+grep("(?<=pay)\\s", test, value = TRUE, perl = TRUE)
+```
+
+## negative lookbehind
+
+```{r}
+test = c("I will pay my late fee of $400 USD", 
+         "I am paying my late fees of 400 dollars", 
+         "Some people just use $ for money")
+
+grep("(?<!\\$\\s)\\d+", test, value = TRUE, perl = TRUE)
+```
 
 ## How To Learn
 
