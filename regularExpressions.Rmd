@@ -112,10 +112,10 @@ grep("^\\(*[0-9]{3}\\)*(\\s|-|.)*[0-9]{3}(\\s|-|.)*[0-9]{4}$", numList, value = 
 ## Broken Down
 
 <span class="fragment highlight-blue">^\\(\*</span>
-<span class="fragment highlight-red">[0-9]</span>
+<span class="fragment highlight-red">[0-9]{3}</span>
 <span class="fragment highlight-blue">\\)\*</span>
 <span class="fragment highlight-green">(\\s|-|.)\*</span>
-<span class="fragment highlight-red">[0-9]</span>
+<span class="fragment highlight-red">[0-9]{3}</span>
 <span class="fragment highlight-green">(\\s|-|.)\*</span>
 <span class="fragment highlight-red">[0-9]{4}$</span>
 
@@ -227,9 +227,9 @@ Just as text can be elaborate, so can regular expressions.
 
 We can replace some of the things we learned earlier with shorter characters.
 
->- \\d == [0-9]
+- \\d == [0-9]
 
->- \\w == [a-zA-Z]
+- \\w == [a-zA-Z]
 
 ## Boundaries
 
@@ -247,7 +247,7 @@ cat("\\B")
 ## Examples
 
 ```{r}
-test = c("bob ate the cat quickly", "whatever happened to bobcat goldwaithe", "big bob ate the cat quickly", "bob hates catsup")
+test = c("bob ate the cat quickly", "whatever happened to bobcat goldthwait", "big bob ate the cat quickly", "bob hates catsup")
 
 test
 ```
@@ -296,7 +296,14 @@ cat("[:lower:]")
 
 ## Easy Reading
 
-The alternative to [:punct:] is "!"\#$%&'()*+,\-./:;<=>?@\[\\\]^_`{|}~"
+[:punct:] 
+
+or
+
+"!"\#$%&'()*+,\-./:;<=>?@\[\\\]^_`{|}~"
+```{r, results='markup'}
+#cat("\\"\\!"\#$%&'()*+,\-./:;<=>?@\[\\\]^_`{|}~\\"")
+```
 
 
 ## Lookarounds
@@ -319,6 +326,15 @@ Lookarounds consist of the following:
 test = c("I will pay my late fees", 
          "I am paying my late fees")
 
+test
+```
+
+```{r, results='markup'}
+cat("(?:pay)ing")
+```
+
+
+```{r}
 grep("(?:pay)ing", test, value = TRUE, perl = TRUE)
 ```
 
@@ -329,8 +345,19 @@ grep("(?:pay)ing", test, value = TRUE, perl = TRUE)
 test = c("I will pay my late fees", 
          "I am paying my late fees")
 
+test
+```
+
+
+```{r, results='markup'}
+cat("pay(?!ing)")
+```
+
+
+```{r}
 grep("pay(?!ing)", test, value = TRUE, perl = TRUE)
 ```
+
 
 ## positive lookbehind
 
@@ -338,8 +365,18 @@ grep("pay(?!ing)", test, value = TRUE, perl = TRUE)
 test = c("I will pay my late fees", 
          "I am paying my late fees")
 
+test
+```
+
+```{r, results='markup'}
+cat("(?<=pay)\\s")
+```
+
+
+```{r}
 grep("(?<=pay)\\s", test, value = TRUE, perl = TRUE)
 ```
+
 
 ## negative lookbehind
 
@@ -348,8 +385,18 @@ test = c("I will pay my late fee of $400 USD",
          "I am paying my late fees of 400 dollars", 
          "Some people just use $ for money")
 
+test
+```
+
+```{r}
+cat("(?<!\\$\\s)\\d+")
+```
+
+```{r}
 grep("(?<!\\$\\s)\\d+", test, value = TRUE, perl = TRUE)
 ```
+
+
 
 ## How To Learn
 
@@ -358,3 +405,11 @@ Dieter time!
 ## As Above, So Below
 
 Once you start learning regular expressions, they start to come easier and finding patterns becomes almost second nature.
+
+## Next Up
+
+Tuesday, November 14
+
+Parallel Computing, HPC, & The CRC
+
+## {data-background-image="https://media.giphy.com/media/Z4IXspU3iCHlK/giphy.gif"}
